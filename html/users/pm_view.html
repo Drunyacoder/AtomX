@@ -60,7 +60,7 @@ $(function(){
                 <li><a href="{{ www_root }}/users/edit_form_by_admin/{{ user.id }}">{{ __('Edit profile') }}</a></li>
                 {% else %}
                     {% if user.id == fps_user_id and checkAccess(['users', 'edit_mine']) %}
-                    <li><a href="{{ www_root }}/users/edit_form/">{{ __('Edit profile') }}</a></li>
+                    <li><a href="{{ www_root }}/users/edit_form/">{{ 'Edit profile'|lang }}</a></li>
                     {% endif %}
                 {% endif %}
 				 <li><a href="{{ www_root }}/users/pm_send_form/">Отправить ЛС</a></li>
