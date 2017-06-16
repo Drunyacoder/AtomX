@@ -1,0 +1,28 @@
+{% if entities %}
+{% for entity in entities %}
+<div class="material">
+		  <div class="mat-title">
+			 <div class="right">
+				<span class="views" title="Просмотров: {{ entity.views }}">{{ entity.views }}</span>
+				<span class="comments" title="Комментариев: {{ entity.comments }}">{{ entity.comments }}</span>
+			 </div>
+		     <a href="{{ entity.add_markers.entry_url }}"><h1>{{ entity.title }}</h1></a>
+		     <span class="mod-panel">{{ entity.add_markers.moder_panel }}</span>
+		  </div>
+		  <div class="mat-content">
+		    <div class="announce">{{ entity.add_markers.announce }}</div>
+		    <div class="footerinfo">
+			<span class="left">
+			   Автор: <a href="{{ entity.add_markers.profile_url }}">{{ entity.author.name }}</a>
+			   Раздел: <a href="{{ www_root }}/{{ entity.skey }}/category/{{ entity.category.id }}">{{ entity.category.title|escape }}</a>
+			</span>
+		       Добавлено: {{ AtmGetDate(entity.date) }}
+	       </div>
+		 </div>
+</div>
+{% endfor %}
+{% else %}
+<div class="informs">
+Материалов еще не добавлено.
+</div>
+{% endif %}

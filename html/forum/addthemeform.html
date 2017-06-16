@@ -1,0 +1,88 @@
+{{ editor_body }}
+<script language="JavaScript" type="text/javascript">
+function pollForm(element) {
+	if (!$(element).is(':checked')) {
+		$('#poll_question').hide();
+		$('#poll_ansvers').hide();
+	} else {
+		$('#poll_question').show();
+		$('#poll_ansvers').show();
+	}
+}
+</script>
+<!-- Multi attaches upload -->
+<script type="text/javascript" src="{{ template_path }}/js/atm-multiupload.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+	initAtomMultiload('{{ module }}', '{{ 'Error'|lang }}', '{{ template_path }}');
+});
+</script>
+{{ context.errors }}
+<form name="sendForm" id="sendForm" action="{{ context.action }}" method="POST" enctype="multipart/form-data" onsubmit="return checkForm(this)">
+<div class="material">
+	  <div class="mat-title">Coздание новой темы</div>
+	  <div class="mat-content">
+          <ul class="spisok-all">
+          <li>
+            <span class="siu_title"><strong>Название темы:</strong></span>
+            <span class="siu_data"><input type="text" name="theme" maxlength="55" value="{{ context.theme }}"/></span>
+          </li>
+		  <li>
+            <span class="siu_title"><strong>Описание:</strong></span>
+            <span class="siu_data"><input type="text" name="description" maxlength="128" value="{{ context.description }}" /></span>
+          </li>
+		  <li>
+            <div class="answertextarea"><textarea id="editor" {{ editor_text }} class="text-area" name="main_text">{{ context.main_text }}</textarea></div>
+          </li>
+		   {% if fps_admin_access == 1 %}
+		  <li>
+            <span class="siu_title"><strong>Закрыть доступ к теме</strong></span>
+            <span class="siu_data">
+			{% for group in context.users_groups %}
+			<label><input type="checkbox" {% if context.gr_access != '' %} {% for curr in context.gr_access %} {% if curr == group.id %} checked="checked" {% endif %} {% endfor %} {% endif %} value="{{ group.id }}" name="gr_access_{{ group.id }}" /> {{ group.title }}</label><br />
+			{% endfor %}
+			</span>
+          </li>
+		  {% endif %}
+		  <li>
+            <span class="siu_title"><strong>Прикрепить файлы</strong></span>
+            <span class="siu_data" id="attachments">
+                <input class="attachField" type="file" id="attach" multiple="multiple" name="attach[]">
+				<div id="preloader">
+					<span id="loader"><img src="/sys/img/ajaxload.gif" alt="loading"></span>
+				</div>
+				<div><progress style="display:none;"></progress></div>
+				<br><a id="attaches-show-all" href="javascript:void(0);" onClick="AtomX.loadAllAttaches('{{ module }}'); $('#attaches-hide').show();">Показать все</a>
+				<a id="attaches-hide" href="javascript:void(0);" onClick="$('.attaches-info, #attaches-hide').hide();">Закрыть</a>
+				<div class="attaches-info" id="attaches-info"></div>
+			</span>
+          </li>
+		  <li>
+            <span class="siu_title"><strong>Добавить опрос:</strong></span>
+            <span class="siu_data"><input type="checkbox" name="poll" value="1" onClick="pollForm(this);" {% if context.poll %} checked="checked" {% endif %}/></span>
+          </li>
+		  <li id="poll_question" {% if context.poll == 0 %} style="display:none;" {% endif %}>
+            <span class="siu_title"><strong>Вопрос:</strong>Знак вопроса(<b>?</b>) добавлять не нужно, он добавится автоматически.</span>
+            <span class="siu_data"><input type="text" name="poll_question" value="{{ context.poll_question }}" /><b style="font-size: 20px;"> ? </b></span>
+         </li>
+		 <li id="poll_ansvers" {% if context.poll == 0 %} style="display:none;" {% endif %}>
+            <span class="siu_title"><strong>Варианты ответов:</strong>Каждый вариант ответа должен быть на отдельной строке.</span>
+            <span class="siu_data"><textarea name="poll_ansvers">{{ context.poll_ansvers }}</textarea></span>
+          </li>
+		  <li>
+            <span class="siu_title"><strong>Закрепить первое сообщение темы:</strong></span>
+            <span class="siu_data"><input type="checkbox" name="first_top"{% if context.first_top %} checked="checked"{% endif %}/></span>
+          </li>
+		  {% if checkAccess([module,'close_themes']) %}
+		  <li>
+            <span class="siu_title"><strong>Закрыть тему(Запретить отвечать на тему):</strong></span>
+            <span class="siu_data"><input type="checkbox" name="locked"{% if context.locked %} checked="checked"{% endif %}/></span>
+          </li>
+		  {% endif %}
+		  <li>
+		  <input class="subm" type="submit" name="submitForm" value="Создать тему" />
+		  </li>
+		  </ul>
+	  </div>
+</div>
+</form>

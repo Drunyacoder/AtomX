@@ -1,0 +1,139 @@
+
+{{ editor_body }}
+
+<script>
+
+function sendPM() {
+	$('#send_pm_a').hide();
+	$('#pm_send_form').show();
+}
+
+/**
+ * Callback
+ * @param response
+ */
+var appendNewMessages = function(messages){
+	var content = '';
+	$(messages).each(function(key, message){
+		if (key == 0) AtomX.lastMessageId = message.id;
+		content = '<li style="padding:5px;"><div class="userlistavatar"><img src="'+message.sender.avatar+'" class="avatar" alt=""/></div>'
+			+'<div class="listuser">'
+			+'<ul class="listuserbuttons"><li><a href="{{ www_root }}/users/pm_delete/'+message.id+'" onClick="return confirm(\'Are you sure?\');">Удалить</a><input type="checkbox" class="packPoint" onClick="if(this.checked){addToPackage(this.value);}else{delFromPackage(this.value);}" value="'+message.id+'" /></li></ul>'
+			+'<h3 class="userlisttitle"><a href="{{ www_root }}/users/info/'+message.sender.id+'">'+message.sender.name+'</a></h3>'
+			+'<div class="text">'+message.message+'</div>'
+			+'<div style="float:none;"><span>Дата написания: '+message.sendtime+'</span></div>'
+			+'</div>'
+			+'</li>';
+	});
+	$('#messages-agregator').html(content + $('#messages-agregator').html());
+	fpsWnd.hide('AtmPmLoader');
+	$('textarea[name="mainText"]').val('');
+	return false;
+}
+
+$(function(){
+	setInterval(function(){
+		AtomX.updatePmList(appendNewMessages);
+	}, 10000);
+	
+	$('#sendForm').submit(function(){
+		setTimeout(function(){
+			AtomX.sendPm($('#sendForm'), appendNewMessages);
+		}, 0);
+		
+		return false;
+	});
+});
+
+
+</script>
+
+{% set user = fetch('users', fps_user_id) %}
+<div class="material" style="background:none; box-shadow:none;">
+	  <div class="mat-title margin">Беседа с {{ user.name }}</div>
+	  <div class="mat-content">
+	  <div class="userblock">
+		  <ul class="userslinks">
+		         <li><a href="{{ www_root }}/users/info/{{ user.id }}">Обзор Профиля</a></li>
+				 <li class="active"><a href="{{ www_root }}/users/pm/">Личные сообщения</a></li>
+                {% if checkAccess(['users', 'edit_users']) %}
+                <li><a href="{{ www_root }}/users/edit_form_by_admin/{{ user.id }}">{{ __('Edit profile') }}</a></li>
+                {% else %}
+                    {% if user.id == fps_user_id and checkAccess(['users', 'edit_mine']) %}
+                    <li><a href="{{ www_root }}/users/edit_form/">{{ __('Edit profile') }}</a></li>
+                    {% endif %}
+                {% endif %}
+				 <li><a href="{{ www_root }}/users/pm_send_form/">Отправить ЛС</a></li>
+				 <li><a href="{{ www_root }}/users/send_mail_form/{{ message.user.id }}">Отправить на почту</a></li>
+                {% if user.statistic %}
+                <li class="category"><a>Публикации</a></li>
+                <li class="submenu">
+                    {% for stat in user.statistic %}
+                    {% if stat.count %}
+                    <a href="{{ stat.url }}">{{ stat.text }} ({{ stat.count }})</a>
+                    {% endif %}
+                    {% endfor %}
+                </li>
+                {% endif %}
+		  </ul>
+	      <div class="userinfo">
+		    <ul class="userlist">
+			   <li class="sendbutton" id="send_pm_a" onclick="sendPM()">Развернуть форму для ответа</li>
+			   <li id="pm_send_form" style="display: none;overflow: visible;">
+			      <form name="sendForm" id="sendForm" action="/users/pm_send" method="POST" enctype="multipart/form-data">
+			         <textarea id="editor" {{ editor_text }} class="text-area" name="mainText"></textarea>
+			         <input type="text" name="toUser" id="toUser" maxlength="30" value="{{ collocutor.name }}" style="display: none" />
+			         <input class="subm" type="submit" name="submitForm" value="Отправить" />
+                  </form>
+			   </li>
+			<div id="messages-agregator">
+		     {% if messages %}
+             {% for message in messages %}
+				<script>
+					if (typeof AtomX.lastMessageId == 'undefined') AtomX.lastMessageId = {{ message.id }};
+				</script>
+				<li style="padding:5px;"{% if message.viewed != 1 %}class="send"{% endif %}>
+					{% if message.direction == 'out' %}
+						{% set messageUser = message.touser %}
+					{% else %}
+						{% set messageUser = message.fromuser %}
+					{% endif %}
+					
+					<div class="userlistavatar">
+						{% if message.direction == 'in' %}
+							<img src="{{ getAvatar(messageUser.id) }}" class="avatar" alt=""/>
+						{% else %}
+							<img src="{{ getAvatar(fps_user_id) }}" class="avatar" alt=""/>
+						{% endif %}
+					</div>
+					<div class="listuser">
+						  <ul class="listuserbuttons">
+							  <li>{{ message.deleteLink }}<input type="checkbox" class="packPoint" onClick="if(this.checked){addToPackage(this.value);}else{delFromPackage(this.value);}" value="{{ message.id }}" /></li>									
+						  </ul>
+						  <h3 class="userlisttitle">
+						  {% if message.direction == 'in'  %}
+						  <a href="{{ www_root }}/users/info/{{ collocutor.id }}">{{ collocutor.name }}</a>
+						  {% else %}
+						  <a style="color: #787C88;text-decoration: none;cursor: default;">{{ fps_user_name }}</a>
+						  {% endif %}
+						  </h3>
+						  <div class="text">
+							{{ message.message }}
+						  </div>
+						  <div style="float:none;">
+							   <span>Дата написания: {{ AtmGetDate(message.sendtime) }}</span>
+						  </div>
+					</div>
+				</li>
+			{% endfor %}
+            {% endif %}
+			</div>
+	           <li>	
+			     Удалить отмеченные сообщения: <input id="packButton" type="button" disabled="disabled" onClick="sendPack('/users/pm_delete_pack/');" value="(0)">
+	            <div style="display:none;"><form id="actionPack" action="" method="POST"></form></div>
+	           <li>
+           </ul>	
+	      </div>
+	  </div>
+	  </div>
+    </div>

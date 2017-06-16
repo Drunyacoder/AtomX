@@ -1,0 +1,84 @@
+<script type="text/javascript">
+$(function() {
+    var AtomX = window.AtomX || {};
+    AtomX.autocompletePastValue = '';
+    $('[list=findthemes]').keyup(function() {
+        if ($('[list=findthemes]').val().length > 2) {
+            if ($('[list=findthemes]').val() != AtomX.autocompletePastValue) {
+                AtomX.autocompletePastValue = $('[list=findthemes]').val();
+                $.get('/forum/search_themes/?name='+$('[list=findthemes]').val(), {}, function(data){
+                    if (data.length) {
+                        //var data = $.parseJSON(data);
+                        $('#findthemes').html('');
+                        $(data).each(function(key, row){
+                            $('#findthemes').html($('#findthemes').html() + '<option value="' + row.title + ' ('+row.id+')">');
+                        });
+                    }
+                });
+            }
+        } else {
+            $('#findthemes').html('');
+        };
+    });
+    return;
+});
+</script>
+{{ context.errors }}
+<form name="editThemeForm" id="editThemeForm" action="{{ context.action }}" method="POST">
+<div class="material">
+	  <div class="mat-title">Редактирование темы</div>
+	  <div class="mat-content">
+          <ul class="spisok-all">
+          <li class="notice">
+            <span class="siu_title">
+				<strong>Склеить тему с:</strong>
+				<span class="help">*Предусмотрен автопоиск. При заполнении,<br> остальные поля не требуются.</span>
+			</span>
+            <span class="siu_data">
+				<input type="text" name="unite_theme" value="" list="findthemes" />
+                <datalist id="findthemes"></datalist>
+			</span>
+		  </li>
+          <li>
+            <span class="siu_title"><strong>Местонахождение темы:</strong></span>
+            <span class="siu_data"><select name="id_forum">{{ context.options }}</select></span>
+		  </li>
+		  <li>
+			<span class="siu_title"><strong>Название темы:</strong></span>
+            <span class="siu_data"><input type="text" name="theme" maxlength="55" value="{{ context.theme }}" /></span>
+		  </li>
+		  <li>
+			<span class="siu_title"><strong>Описание темы:</strong></span>
+            <span class="siu_data"><input type="text" name="description" maxlength="128" value="{{ context.description }}" /></span>
+		  </li>
+		  <li>
+			<span class="siu_title"><strong>Автор темы:</strong></span>
+            <span class="siu_data"><input type="text" name="author" value="{{ context.author }}" disabled /></span>
+		  </li>
+		   {% if fps_admin_access == 1 %}
+		  <li>
+			<span class="siu_title"><strong>Закрыть доступ:</strong></span>
+            <span class="siu_data">
+			{% for group in context.users_groups %}
+		      <label><input type="checkbox" {% if context.gr_access %} {% for curr in context.gr_access %} {% if curr == group.id %} checked="checked" {% endif %} {% endfor %} {% endif %} value="{{ group.id }}" name="gr_access_{{ group.id }}" />{{ group.title }}</label>
+           {% endfor %}
+		   </span>
+		  </li>
+		   {% endif %}
+		  <li>
+			<span class="siu_title"><strong>Закрепить первое сообщение темы:</strong></span>
+            <span class="siu_data"><input type="checkbox" name="first_top" {% if context.first_top %} checked="checked" {% endif %} /></span>
+		  </li>
+		  {% if checkAccess([module,'close_themes']) %}
+		  <li>
+			<span class="siu_title"><strong>Закрыть тему:</strong></span>
+            <span class="siu_data"><input type="checkbox" name="locked" {% if context.locked %} checked="checked" {% endif %} </span>
+		  </li>
+		  {% endif %}
+		  <li>
+			<input type="submit" name="sendForm" value="Сохранить" />
+		  </li>
+		  </ul>
+	  </div>
+</div>
+</form>

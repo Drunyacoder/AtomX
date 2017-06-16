@@ -1,0 +1,82 @@
+<script type="text/javascript">
+    $(function() {
+        var AtomX = window.AtomX || {};
+        AtomX.autocompletePastValue = '';
+        $('[list=findusers]').keyup(function() {
+            if ($('[list=findusers]').val().length > 2) {
+                if ($('[list=findusers]').val() != AtomX.autocompletePastValue) {
+                    AtomX.autocompletePastValue = $('[list=findusers]').val();
+                    $.get('/users/search_niks/?name='+$('[list=findusers]').val(), {}, function(data){
+                        if (data.length) {
+                            //var data = $.parseJSON(data);
+                            $('#findusers').html('');
+                            $(data).each(function(key, row){
+                                $('#findusers').html($('#findusers').html() + '<option value="' + row.name + '">');
+                            });
+                        }
+                    });
+                }
+            } else {
+                $('#findusers').html('');
+            };
+        });
+        return;
+    });
+</script>
+{{ context.errors }}
+<form name="sendForm" id="sendForm" action="{{ context.action }}" method="POST" onsubmit="return checkForm(this)">
+	<div class="material" style="background:none; box-shadow:none;">
+	  <div class="mat-content">
+	  <div class="userblock">
+		  <ul class="userslinks">
+            <li><a href="{{ www_root }}/users/info/{{ user.id }}">Обзор Профиля</a></li>
+            {% if checkAccess(['users', 'edit_users']) %}
+            <li><a href="{{ www_root }}/users/edit_form_by_admin/{{ user.id }}">{{ __('Edit profile') }}</a></li>
+            {% else %}
+                {% if checkAccess(['users', 'edit_mine']) %}
+                <li><a href="{{ www_root }}/users/edit_form/">{{ __('Edit profile') }}</a></li>
+                {% endif %}
+            {% endif %}
+            {% if fps_user_id %}
+            <li><a href="{{ www_root }}/users/pm/">Личные сообщения</a></li>
+            {% endif %}
+            <li><a href="{{ www_root }}/users/pm_send_form/{{ user.id }}">Отправить ЛС</a></li>
+            <li class="active"><a href="{{ www_root }}/users/send_mail_form/{{ user.id }}">Отправить на почту</a></li>
+
+            {% if user.statistic %}
+            <li class="category"><a>Публикации</a></li>
+            <li class="submenu">
+                {% for stat in user.statistic %}
+                {% if stat.count %}
+                <a href="{{ stat.url }}">{{ stat.text }} ({{ stat.count }})</a>
+                {% endif %}
+                {% endfor %}
+            </li>
+            {% endif %}
+		  </ul>
+	      <div class="userinfo">
+		    <ul class="spisok-all">
+            <li>
+              <span class="siu_title"><strong><font color="red">*</font> Кому:</strong>Внимание, в форме предусмотрен поиск по именам</span>
+              <span class="siu_data">
+			    <input type="text" name="toUser" id="toUser" maxlength="30" value="{{ context.to_user }}" list="findusers" />
+				<datalist id="findusers"></datalist>
+			  </span>
+            </li>
+			<li>
+              <span class="siu_title"><strong><font color="red">*</font> Заголовок сообщения:</strong></span>
+              <span class="siu_data"><input type="text" name="subject" maxlength="60" value="{{ context.subject }}" />
+			  </span>
+            </li>
+			<li>
+              <textarea name="message" cols="60" rows="15" style="width: 99%;">{{ context.message }}</textarea>
+            </li>
+			<li>
+              <input class="subm" type="submit" name="submitForm" value="Отправить" />
+            </li>
+		    </ul>
+	      </div>
+	  </div>
+    </div>
+	</div>
+</form>

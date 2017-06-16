@@ -1,0 +1,18 @@
+.section-1 {background:#555;}
+.section-1  .menu > ul > li ul li {background:#ddd;}
+.section-1  .menu > ul > li ul li:hover a {background:#777;}
+
+.versions-slider {right:0px;}
+.versions-slider > .viewport > .items > .item {height:400px;}
+.versions-slider > .viewport > .items > .item:nth-child(1n) {height:400px;}
+.versions-slider > .viewport > .items > .item:nth-child(2n) {height:200px;}
+.versions-slider > .viewport > .items > .item:nth-child(3n) {height:300px;}
+.versions-slider > .viewport > .items > .item:nth-child(4n) {height:200px;}
+.versions-slider > .viewport  > .items > .item .content  {opacity:1;}
+.versions-slider > .viewport  > .items > .item .dashed {height:80%;}
+
+.left_arr, .right_arr {border:none;}
+.hr {border:none; background:url('../img/splash/gradients-sprite.png') 0 350px repeat-x;}
+
+.opisalovo .content {}
+.circle {opacity:1;}

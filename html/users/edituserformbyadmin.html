@@ -1,0 +1,111 @@
+<!--{#
+For inspect an any variable use "show" filter as shown below:
+{{ context.entity|show }}
+
+It represents a variable the same way as the "var_dump" function in PHP.
+
+More details & documentation are located at http://atomx.net/stat/category/27/.
+
+Current context:
+- context (array)
+- - action (string)
+- - user (array)
+- - errors (array)
+- - options (string)
+- - servertime (string)
+- - unlinkfile (string)
+#}-->
+
+
+{% set user = fetch('users', context.user.id) %}
+<div class="material">
+	  <div class="mat-title">{{ 'User profile'|lang }} - {{ user.name }}</div>
+	  <div class="mat-content">
+		
+		{{ context.errors }}
+		<form name="addNewUserFormByAdmin" id="sendForm" action="{{ context.action }}" method="POST" enctype="multipart/form-data">
+          <ul class="spisok-all">
+			  <li>
+				<span class="siu_title"><strong>{{ 'Login'|lang }}:</strong></span>
+				<span class="siu_data"><input type="text" name="name" maxlength="30" value="{{ context.user.name }}" readonly /></span>
+			  </li>
+			  <li>
+				<span class="siu_title"><strong>{{ 'E-mail'|lang }}:</strong></span>
+				<span class="siu_data">
+				<input type="hidden" name="oldEmail" value="{{ context.user.oldemail }}" />
+				<input type="text" name="email" maxlength="60" value="{{ context.user.email }}" /></span>
+			  </li>
+			  <li>
+				<span class="siu_title"><strong>{{ 'New password'|lang }}:</strong>Указывайте пароль <em>только</em> если вы хотите его поменять.</span>
+				<span class="siu_data"><input type="password" name="newpassword" maxlength="30" value=""  /></span>
+			  </li>
+			  <li>
+				<span class="siu_title"><strong>{{ 'Confirm password'|lang }}:</strong>{{ 'Only if you specify a new password'|lang }}</span>
+				<span class="siu_data"><input type="password" name="confirm" maxlength="30" value=""  /></span>
+			  </li>
+			  <li>
+				<span class="siu_title"><strong>{{ 'Sex'|lang }}:</strong></span>
+				<span class="siu_data">
+					  {{ 'Man'|lang }}<input type="radio" name="pol" value="1"{{ context.user.mpol }} />
+					  {{ 'Women'|lang }}<input type="radio" name="pol" value="2"{{ context.user.fpol }} />
+				</span>
+			  </li>
+			  <li>
+				<span class="siu_title"><strong>{{ 'City'|lang }}:</strong></span>
+				<span class="siu_data"><input type="text" name="city" maxlength="100" value="{{ context.user.city }}" /></span>
+			  </li>
+			  <li>
+				<span class="siu_title"><strong>{{ 'Date of birth'|lang }}:</strong>(день;месяц;год)</span>
+				<span class="siu_data"> 
+								 <select name="bday">{{ context.user.bday_selector }}</select>
+								 <select name="bmonth">{{ context.user.bmonth_selector }}</select>
+								 <select name="byear">{{ context.user.byears_selector }}</select>                 
+				</span>
+			  </li>
+			  <li>
+				<span class="siu_title"><strong>{{ 'Time zone setting'|lang }}:</strong>{{ 'Specify the difference of your time server side to adjust the time on the clock of a site under you'|lang }}.</span>
+				<span class="siu_data">
+					<select name="timezone">{{ context.options }}</select>
+					{{ 'The current time on the server'|lang }}: {{ context.servertime }}
+				</span>
+			  </li>
+			  <li>
+				<span class="siu_title"><strong>{{ 'Avatar'|lang }}:</strong>Показывает небольшое изображение рядом с вашими ответами, материалами и т.п</span>
+				<span class="siu_data">
+					<img title="{{ context.user.name }}" class="avatar" border="0" src="{{ context.user.avatar }}" alt=""><br/>
+					{{ context.unlinkfile }}<br/><input type="file" name="avatar"  /></span>
+			  </li>
+			  <li>
+				<span class="siu_title"><strong>{{ 'Signature'|lang }}:</strong>Показывается под вашими сообщениями</span>
+				<span class="siu_data"><textarea name="signature" cols="30" rows="3">{{ context.user.signature }}</textarea></span>
+			  </li>
+			  <li>
+				<span class="siu_title"><strong>{{ 'About myself'|lang }}:</strong></span>
+				<span class="siu_data"><textarea name="about" cols="30" rows="3">{{ context.user.about }}</textarea></span>
+			  </li>
+			  <li>
+				<span class="siu_title"><strong>{{ 'Home page'|lang }}:</strong> {{ 'Your WEB-site or a link to your page in a social network'|lang }}</span>
+				<span class="siu_data"><input type="text" name="url" maxlength="60" value="{{ context.user.url }}"  /></span>
+			  </li>
+			  <li>
+				<span class="siu_title"><strong>{{ 'Telephone'|lang }}:</strong></span>
+				<span class="siu_data"><input type="text" name="telephone" maxlength="100" value="{{ context.user.telephone }}" /></span>
+			  </li>
+			  <li>
+				<span class="siu_title"><strong>{{ 'Get notified by Email'|lang }}:</strong></span>
+				<span class="siu_data">
+					<input type="checkbox" {% if context.user.email_notification %}checked="checked"{% endif %} name="email_notification" value="1" />
+				</span>
+			  </li>
+			  <li>
+				<span class="siu_title"><strong>{{ 'Status'|lang }}:</strong></span>
+				<span class="siu_data">{{ context.user.status }}</span>
+			  </li>
+			  <li>
+			  <input type="submit" name="submitForm" value="{{ 'Save'|lang }}" />
+			  </li>
+          </ul>
+		</form>
+	  </div>
+</div>
+

@@ -1,0 +1,21 @@
+<div class="informs" style="text-align: center;">
+	<table class="error" align="center">
+	<tr>
+	  <th>{{ 'Information'|lang }}</th>
+	</tr>
+	<tr>
+	  <td style="text-align:center;">
+	  {% if info_message|typeof  == 'array' %}
+		<ul>
+		{% for error in info_message %}
+			<li>{{ error }}</li>
+		{% endfor %}
+		</ul>
+	  {% else %}
+		{{ info_message }}
+	  {% endif %}
+	  </td>
+	</tr>
+	</table>
+</div>
+

@@ -1,0 +1,68 @@
+{% set user = fetch('users', fps_user_id) %}
+<div class="material" style="background:none; box-shadow:none;">
+	  <div class="mat-content">
+	  <div class="userblock">
+		  <ul class="userslinks">
+		         <li><a href="{{ www_root }}/users/info/{{ fps_user_id }}">Мой профиль</a></li>
+                {% if checkAccess(['users', 'edit_users']) %}
+                <li><a href="{{ www_root }}/users/edit_form_by_admin/{{ user.id }}">{{ __('Edit profile') }}</a></li>
+                {% else %}
+                    {% if user.id == fps_user_id and checkAccess(['users', 'edit_mine']) %}
+                    <li><a href="{{ www_root }}/users/edit_form/">{{ __('Edit profile') }}</a></li>
+                    {% endif %}
+                {% endif %}
+				 <li class="active"><a href="{{ www_root }}/users/pm/">Личные сообщения</a></li>
+				 <li><a href="{{ www_root }}/users/pm_send_form/">Отправить ЛС</a></li> 
+                {% if fps_user_id != user.id %}
+                <li><a href="{{ www_root }}/users/send_mail_form/{{ user.id }}">Отправить на почту</a></li>
+                {% endif %}
+                {% if user.statistic %}
+                <li class="category"><a>Публикации</a></li>
+                <li class="submenu">
+                    {% for stat in user.statistic %}
+                    {% if stat.count %}
+                    <a href="{{ stat.url }}">{{ stat.text }} ({{ stat.count }})</a>
+                    {% endif %}
+                    {% endfor %}
+                </li>
+                {% endif %}
+		  </ul>
+	      <div class="userinfo">
+		    <ul class="userlist">
+		     {% if messages %}
+             {% for message in messages %}
+                            {% if message.direction == 'out' %}
+                                {% set messageUser = message.touser %}
+                            {% else %}
+                                {% set messageUser = message.fromuser %}
+                            {% endif %}
+                            <li {% if message.viewed != 1 %}class="send"{% endif %}>
+							       <div class="userlistavatar" onclick="location.href='{{ www_root }}/users/info/{{ messageUser.id }}'"><img src="{{ messageUser.avatar }}" class="avatar" alt=""/></div>
+							        <div class="listuser">
+								          <ul class="listuserbuttons">
+									          <li><a href="{{ www_root }}/users/pm_view/{{ messageUser.id }}" class="button2">Читать переписку</a></li>
+                                              <li>{{ message.delete }}<input type="checkbox" class="packPoint" onClick="if(this.checked){addToPackage(this.value);}else{delFromPackage(this.value);}" value="{{ messageUser.id }}" /></li>									
+								          </ul>
+								          <h3 class="userlisttitle"><a href="{{ www_root }}/users/info/{{ messageUser.id }}">{{ messageUser.name }}</a>
+                                          <span onclick="location.href='{{ www_root }}/users/pm_view/{{ messageUser.id }}'" style="cursor: pointer; color:{% if message.direction == 'in'  %}blue;">&rArr;{% else %}red;">&lArr;{% endif %}</span>
+										  </h3>
+										  <div class="text" onclick="location.href='{{ www_root }}/users/pm_view/{{ messageUser.id }}'" style="cursor: pointer;">
+			                                {{ message.message }}
+                                            <div class="shadow"></div>
+		                                  </div>
+								          <div>
+								               <span>Последнее обновление: {{ AtmGetDate(message.sendtime) }}</span>
+								          </div>
+							        </div>
+                            </li>
+			{% endfor %}
+            {% endif %}
+                    <li>
+                        Удалить отмеченные сообщения: <input id="packButton" type="button" disabled="disabled" onClick="sendPack('/users/pm_delete_by_user/');" value="(0)">
+                        <div style="display:none;"><form id="actionPack" action="" method="POST"></form></div>
+                    <li>
+           </ul>	
+	      </div>
+	  </div>
+    </div>
+	</div>

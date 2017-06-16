@@ -1,0 +1,15 @@
+.section-1 {background:#555;}
+
+.versions-slider {right:0px;}
+.versions-slider > .viewport > .items > .item {height:400px;}
+.versions-slider > .viewport > .items > .item:nth-child(1n) {height:400px;}
+.versions-slider > .viewport > .items > .item:nth-child(2n) {height:200px;}
+.versions-slider > .viewport > .items > .item:nth-child(3n) {height:300px;}
+.versions-slider > .viewport > .items > .item:nth-child(4n) {height:200px;}
+.versions-slider > .viewport  > .items > .item .content  {opacity:1;}
+
+.left_arr, .right_arr {border:none;}
+.hr {display:none;}
+
+.opisalovo .content {}
+.circle {opacity:1; display:none;}

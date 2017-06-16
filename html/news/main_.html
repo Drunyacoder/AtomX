@@ -1,0 +1,215 @@
+<!doctype html>
+<html>
+<head>
+<title>{{ title }}</title>
+
+<meta name="description" content="{{ meta_description }}" />
+<meta name="keywords" content="{{ meta_keywords }}" />
+<meta charset="UTF-8"/>
+
+<meta name='author' content='Andrey Brykin' />
+<meta name='robots' content='index, follow' />
+<meta name='rating' content='general' />
+<meta name='generator' content='Atom-X CMS' />
+
+<link rel="icon" href="{{ template_path }}/favicon.ico" type="image/x-icon" />
+<link rel="shortcut icon" href="{{ template_path }}/favicon.ico" type="image/x-icon" />
+<link type="text/css" rel="StyleSheet" href="{{ template_path }}/css/style.css" />
+<script language="JavaScript" type="text/javascript" src="{{ www_root }}/sys/js/jquery.js"></script>
+<script language="JavaScript" type="text/javascript" src="{{ www_root }}/sys/js/send_message.js"></script>
+
+<script type="text/javascript" src="{{ template_path }}/js/default.js"></script>
+
+{{ editor_head }}
+
+<!-- FancyBOX -->
+<link type="text/css" rel="StyleSheet" href="{{ template_path }}/css/fancy.css" />
+<script type="text/javascript" src="{{ template_path }}/js/jquery.fancybox.js"></script>
+<!--/FancyBOX -->
+
+<script type="text/javascript">
+{% if fps_user_id %}
+	check_pm('{{ fps_user_id }}');
+{% endif %}
+</script>
+</head>
+
+
+<body>
+<div class="headpanel">
+ <div class="linksap">
+<!--<div class="activewindow"><a href="#">Язык</a><div class="lang" style="width: 70px;"><span>RUS<br>ENG</span></div></div>-->
+<div><a href="//atomx.net/users/info/227/" rel="nofollow">Контакты</a></div>
+<div><a href="//github.com/Drunyacoder/AtomXCMS-2" rel="nofollow">GitHub</a></div>
+<div><a href="//atomx.net/forum/view_theme/1058" rel="nofollow">Поддержка</a></div></div>
+ <div class="userlinksap">
+{% if fps_user_id %}
+<div><a href="{{ www_root }}/users/pm/">Сообщения</a></div>
+<div class="activewindow"><a href="{{ personal_page_link }}">{{ fps_user_name }}</a><div class="miniprofileadm" style="width: 300px;padding: 10px;{% if fps_admin_access == 1 %}height:120px;{% endif %}">
+    <span class="avatarminpro"><img class="avatar" src="{{ getAvatar(fps_user.id) }}" alt=""/></span>
+    <span class="uslinkminpro">
+        <a href="{{ personal_page_link }}">Мой профиль</a>
+        <a href="{{ www_root }}/users/pm_send_form/">Отправить сообщение</a>
+		<a href="{{ www_root }}/users/edit_form/{{ fps_user_id }}">Настройки</a>
+        {% if fps_admin_access == 1 %}
+		<a href="{{ www_root }}/admin/" target="_blank">Админка</a>
+		{% endif %}
+    </span>
+</div></div>
+<div><a href="{{ www_root }}/users/logout">Выход</a></div>
+{% else %}
+<div class="ulogin">{{ ulogin }}</div>
+<div><a href="{{ www_root }}/users/add_form">Регистрация</a></div>
+<div class="activewindow"><a href="{{ www_root }}/users/login_form/">Войти</a>
+<div style="width: 250px;"><span>
+<form id="mloginForm" action="/users/login/?ajax" method="post">
+	Логин: <input type="text" class="loginad" name="username">
+	Пароль: <input type="password" class="passad" name="password">
+	Автовход: <input type="checkbox" name="autologin" value="1">
+	<button type="submit" onclick="sendu('mloginForm'); return false" class="buttonadm">ВОЙТИ</button>
+	<input type="hidden" value="submit" name="submitForm">
+</form>
+</span></div></div>
+{% endif %}
+<div><a href="{{ www_root }}/users/">Пользователи</a></div>
+ </div>
+</div>
+<div class="global">
+<div class="header">
+   <div class="logohead"></div>
+   <div class="infohead">
+	 <div class="sots">
+	   <a href="//atomx.net/documa/">ДОКУМЕНТАЦИЯ</a>
+	   <a href="//atomx.net/loads/category/5/">ШАБЛОНЫ</a>
+	   <a href="//atomx.net/forum/view_theme/362/">СНИППЕТЫ</a>
+	   <a href="//atomx.net/forum/view_forum/38/">ПЛАГИНЫ</a>
+	   <a href="//atomx.net/forum/view_forum/2/">МОДУЛИ</a>
+	 </div>
+   </div>
+</div>
+
+<div class="sider">
+    <div class="sidertop bigmenu">
+	  {{ mainmenu }}
+	  <div class="search">
+	   <form method="POST" action="{{ www_root }}/search/"> 
+        <input type="hidden" name="subaction" value="search"> 
+        <input name="search" placeholder="Найти что-нибудь..." type="text"> 
+        <input value="GO!" type="submit" name="send"> 
+       </form> 
+	  </div>
+	</div>
+	<!---------------------------------------------------------------------------CONTENT/----------------------------------------------------------------------------------------------->
+    <div class="content">
+
+<div class="materials" id="full">
+		<div class="rightbloks">
+			<div class="block">
+			  <div class="blockstop">Голосование</div>
+			  <div class="blokscontent pl_votes"><ul class="mini_list">{{ pl_votes }}</ul></div>
+			</div>
+			<div class="block">
+			  <div class="blockstop">Топ новостей</div>
+			  <div class="blokscontent"><ul class="mini_list">{{ pop_news }}</ul></div>
+			</div>
+			<div class="block">
+			  <div class="blockstop">Последние комментарии</div>
+			  <div class="blokscontent last_comments">{{ last_comments }}</div>
+			</div>
+			<div class="block">
+			  <div class="blockstop">Топ пользователей</div>
+			  <div class="blokscontent users_rating">{{ users_rating }}</div>
+			</div>
+			<div class="block">
+			  <div class="blockstop">Сайты на Atom-M CMS</div>
+			  <div class="blokscontent">
+			  <ul class="mini_list">
+				 <li><img src="//cms.modos189.ru/favicon.ico" height="16" width="16" alt=""/><a href="//cms.modos189.ru" title="Презентационная страница AtomM CMS" rel="nofollow">Презентационная страница AtomM</a></li>
+				 <li><img src="//modos189.ru/sys/img/favicon.ico" height="16" width="16" alt=""/><a href="//modos189.ru" title="Просто блог" rel="nofollow">Блог modos189</a></li>
+				 <li><img src="//atomx.net/sys/img/favicon.ico" height="16" width="16" alt=""/><a href="//atomx.net" title="Официальный сайт AtomX CMS" rel="nofollow">Оф.Сайт. AtomX CMS</a></li>
+			  </ul>
+			  </div>
+			</div>
+		</div>
+		<div class="leftblocks">
+			<div class="spedbar">
+				<div>
+					<div>{{ navigation }}</div>
+				</div>
+			</div>
+			{% if add_link %}<a href="{{ www_root }}/news/add_form/" class="lastpostsbutton button">Добавить новость</a>{% endif %}
+			<div style="clear:both;"></div>
+			{% if pagination %}<div class="mezdyblock"><span class="meta">{{ meta }}</span><div class="paginator"><div class="pages">{{ pagination }}</div></div></div>{% endif %}
+			{{ content }}
+			{% if pagination %}<div class="mezdyblock"><div class="paginator"><div class="pages">{{ pagination }}</div></div></div>{% endif %}	
+			{% if comments_pagination %}<div class="mezdyblock"><div class="paginator"><div class="pages">{{ comments_pagination }}</div></div></div>{% endif %}
+			{{ comments }}
+			{% if comments_pagination %}<div class="mezdyblock"><div class="paginator"><div class="pages">{{ comments_pagination }}</div></div></div>{% endif %}
+			{{ comments_form }}
+			{% if categories %}<div class="material"><div class="inftitle">Категории:</div><div class="infcont"><ul>{{ categories }}</ul></div></div>{% endif %}
+		</div>
+</div>
+
+	<div class="material">
+           <div class="inftitle">Сейчас online: {{ all_online }}. Зарегистрированных: {{ users_online }}. Гостей: {{ guests_online }}. </div>
+	       <div class="infcont">{{ online_users_list }}</div>
+	</div>
+	</div>
+	<!---------------------------------------------------------------------------/CONTENT----------------------------------------------------------------------------------------------->
+</div>
+<!--------------------------------------------------------CHAT----------------------------------------------------------------------------------------------------------------------------->
+{% if fps_chat %}
+<div class="footerbottom">
+  <div class="butofooter"><a class="buttonfutokno" onclick="ochat()">Общий ЧАТ</a>
+    <div class="messegesokno" id="ochat" style="display:none;">
+      <span class="headfutbutton">Общий чат<span class="closebuttonfut" onclick="ochat()"></span></span>
+	  {{ fps_chat }}
+    </div>
+  </div>
+</div>
+{% endif %}
+<!--------------------------------------------------------FOOTER-BUTTONS------------------------------------------------------------------>
+<div class="footer">
+<div class="people"><span>Сообщество</span>{{ mainmenu }}</div>
+<div class="support"><span>Поддержка</span>
+<a href="//home.develdo.com/downloads.php">Пользовательское соглашение</a>
+<br><a href="//atomx.net/documa/" rel="nofollow">Документация</a>
+<br><a href="{{ www_root }}/users/add_form/">Правила сайта</a>
+<!--<br><a href="#">Заказать рекламу</a>-->
+<br><a href="{{ www_root }}/sitemap.xml">Карта сайта</a>
+</div>
+<div class="faposcms"><span>Atom-X CMS</span>
+<a href="//home.develdo.com/downloads.php/" rel="nofollow">Скачать CMS</a>
+<br><a href="//atomx.net/documa/?p=videotuts" rel="nofollow">Видео-руководство</a>
+<br><a href="//atomx.net/forum/view_forum/4" rel="nofollow">Сообщить о баге</a>
+</div>
+<div style="float: right;padding: 0;">
+<div class="socnet" style="display:block;">
+<a href="//vk.com/atomx_cms" target="_blank" class="vk" title="ВКонтакте" rel="nofollow"></a>
+<a href="//twitter.com/AtomXCMS" target="_blank" class="twitter" title="Twitter" rel="nofollow"></a>
+<a href="//www.facebook.com/fapos" target="_blank" class="fb" title="Facebook" rel="nofollow"></a>
+<!--<a href="#" target="_blank" class="goplus" title="Google Plus" rel="nofollow"></a>-->
+<a href="//github.com/Drunyacoder/AtomXCMS-2" target="_blank" class="github" title="GitHub" rel="nofollow"></a>
+<!--<a href="https://bitbucket.org/atom-m/cms" target="_blank" class="bitbucket" title="BitBucket" rel="nofollow"></a>-->
+<a href="http://youtu.be/7GYpzleSWUU" target="_blank" class="youtube" title="YouTube" rel="nofollow"></a>
+<!--<a href="#" target="_blank" class="skype" title="Skype" rel="nofollow"></a>-->
+<span class="rss">
+   <div>
+      <a href="{{ www_root }}/news/rss/" target="_blank" title="RSS - Новости" rel="nofollow">Новости</a>
+      <a href="{{ www_root }}/stat/rss/" target="_blank" title="RSS - Статьи" rel="nofollow">Статьи</a>
+      <a href="{{ www_root }}/forum/rss/" target="_blank" title="RSS - Форум" rel="nofollow">Форум</a>
+      <a href="{{ www_root }}/loads/rss/" target="_blank" title="RSS - Файлы" rel="nofollow">Файлы</a>
+      <a href="{{ www_root }}/foto/rss/" target="_blank" title="RSS - Фотографии" rel="nofollow">Фото</a>
+   </div>
+</span>
+</div>
+<div>Generated by {{ powered_by }}<br>Design by boriska © {{ fps_year }}</div>
+</div>
+<noindex style="float:right;"><img src="{{ counter }}" alt=""/>{[liveinternet]}</noindex>
+</div>
+</div>
+<audio id="pm-sound-notification"> 
+  <source src="{{ template_path }}/sound_notify.mp3"> 
+</audio>
+</body>
+</html>

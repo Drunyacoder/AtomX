@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=utf-8>
+    <title>Atom-X Free CMS</title>
+    <link href="{{ template_path }}/css/plusstrap.min.css" rel="stylesheet">
+    <link href="{{ template_path }}/css/splash.css?2" rel="stylesheet">
+    <meta name="viewport" content="width=940px">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+
+    <script src='{{ template_path }}/js/jquery.js' type='text/javascript'></script>
+
+    <script>
+    $(window).scroll(function(e){
+        if ($(window).scrollLeft()!=0) {
+            $(window).scrollLeft(0);
+        }
+
+        var scrolled = $(window).scrollTop();
+        var h = $(window).height();
+
+        $('body').css('background-position','0 '+h+'px');
+        $('.screen1').css('background-position','0 '+((-1)*scrolled*.1)+'px');
+        $('.masthead .container').css('opacity',(h-scrolled)/h);
+
+        x2 = h-scrolled;
+        if (x2<0) {
+            x2=0;
+            $('.screen2 .row-fluid').css('top',(scrolled-h)*.3+'px');
+            $('.screen2').css('opacity',(h*2-scrolled)/h*2);
+        } else {
+            $('.screen2 .row-fluid').css('top','0px');
+        }
+        $('.screen2 .span6:first-child').css('right',x2+'px');
+        $('.screen2 .span6:last-child').css('left',x2+'px');
+
+        x3 = h*2-scrolled;
+        if (x3<0) {
+            x3=0;
+            $('.screen3 .row-fluid').css('top',(scrolled-h*2)*.3+'px');
+            $('.screen3').css('opacity',(h*3-scrolled)/h*3);
+        } else {
+            $('.screen3 .row-fluid').css('top','0px');
+        }
+        $('.screen3 .span6:first-child').css('right',x3+'px');
+        $('.screen3 .span6:last-child').css('left',x3+'px');
+
+        x4 = h*3-scrolled;
+        if (x4<0) {
+            x4=0;
+            $('.screen4').css('top',(scrolled-h*3)*.3+'px');
+            $('.screen4').css('opacity',(h*4-scrolled)/h*4);
+        } else {
+            $('.screen4').css('top','0px');
+        }
+
+
+
+
+
+        $('.switchscreen .top').addClass('noactive').removeClass('active');
+        $('.switchscreen .reviews').addClass('noactive').removeClass('active');
+        $('.switchscreen .advantages').addClass('noactive').removeClass('active');
+        $('.switchscreen .install').addClass('noactive').removeClass('active');
+        $('.switchscreen .info').addClass('noactive').removeClass('active');
+        if (scrolled<h) {
+            $('.switchscreen .top').removeClass('noactive').addClass('active');
+        } else if (scrolled<h*2) {
+            $('.switchscreen .reviews').removeClass('noactive').addClass('active');
+        } else if (scrolled<h*3) {
+            $('.switchscreen .advantages').removeClass('noactive').addClass('active');
+        } else if (scrolled<h*4) {
+            $('.switchscreen .install').removeClass('noactive').addClass('active');
+        } else {
+            $('.switchscreen .info').removeClass('noactive').addClass('active');
+        }
+    });
+
+    function scroll(to){
+        height = 0;
+        to = $(to).attr('href');
+        if (to == '#reviews') {
+            height = $(window).height();
+        } else if (to == '#advantages') {
+            height = $(window).height()*2;
+        } else if (to == '#install') {
+            height = $(window).height()*3;
+        } else if (to == '#info') {
+            height = $(window).height()*4;
+        }
+        $("html,body").animate({"scrollTop":height},1000);
+    }
+	
+	// Преимущества
+	$(function(){ 
+        $(".advent").click(function() { 
+           var h4 = $(this).children("h4"),
+		        par = h4.next("p");
+		   
+		if (h4.attr("class")!=="active") {
+		    $('.advent h4').removeClass('active');
+		    h4.addClass('active');
+		    $('.advent p').hide('slow');
+		    par.show('slow');
+		 } else {
+		    par.hide('slow');
+			$('.advent h4').removeClass('active')
+		 } 
+        }); 
+    }); 
+	
+	
+	// Преимущества > описание модулей и плагинов
+	function openinfo(name) {
+	var flag = false;
+	
+		$("#advantages .advent").hide();
+		
+	switch (name) {
+	  case 'closeinfo':
+        flag = true;// чтобы без дерганий
+	  break
+	  //Модули
+	  case 'forum':
+        title = 'Форум';
+        text = '<img src="/img/description/forum.png" alt="' + title + '">';
+        text += 'Наш форум создан так, что любой пользователь может разобраться в нем без особой подготовки. Вы увидите очень удобный редактор сообщений, функциональные опросы, рейтинг отдельных сообщений и конечно же доскональную настройку прав доступа, позволяющую решить практически любую задачу.';
+      break
+      case 'users':
+        title = 'Пользователи';
+        text = '<img src="/img/description/users.png" alt="' + title + '">';
+        text += 'Модуль предназначен для регистрации пользователей. Можно обмениваться личными сообщениями и отправлять почту на E-Mail. Реализованы статусы, ранги, есть поддержка аватаров, уведомления и многое другое.';
+      break
+      case 'news':
+        title = 'Новости';
+        text = '<img src="/img/description/news.png" alt="' + title + '">';
+        text += 'Модуль позволяет создавать категории с любой иерархией, наполнять их материалами и следить за комментариями. Есть премодерация и настройка прав.';
+      break
+      case 'stat':
+        title = 'Статьи';
+        text = '<img src="/img/description/stat.png" alt="' + title + '">';
+        text += 'Модуль позволяет создавать категории с любой иерархией, наполнять их материалами и следить за комментариями. Есть премодерация и настройка прав.';
+      break
+      case 'foto':
+        title = 'Фотокаталог';
+        text = '<img src="/img/description/foto.png" alt="' + title + '">';
+        text += 'Модуль позволяет создавать категории с любой иерархией и наполнять их изображениями. Есть премодерация, вотермарки и настройка прав.';
+      break
+      case 'loads':
+        title = 'Каталог файлов';
+        text = '<img src="/img/description/loads.png" alt="' + title + '">';
+        text += 'Модуль позволяет создавать категории с любой иерархией, наполнять их материалами и следить за комментариями. Есть премодерация и настройка прав.';
+      break
+      case 'search':
+        title = 'Поиск';
+        text = '<img src="/img/description/search.png" alt="' + title + '">';
+        text += 'Этот модуль позволяет организовать поиск необходимой информации на вашем сайте. Поиск осуществляется по заголовкам, описанию и ключевым словам материала.';
+      break
+      case 'statistika':
+        title = 'Статистика';
+        text = '<img src="/img/description/statistika.png" alt="' + title + '">';
+        text += 'Позволяет следить за самой необходимой статисктикой, такой как посещения и посетители. Можно выводить счетчик посещений.';
+      break
+      case 'chat':
+        title = 'Чат';
+        text = '<img src="/img/description/chat.png" alt="' + title + '">';
+        text += 'В AtomX внедрён инновационный чат, в котором на обновление сообщений требуется минимальное количество ресурсов, ведь с сервера приходят только новые сообщения, а вся обработка списка сообщений вынесена в браузер.';
+      break
+      case 'pages':
+        title = 'Страницы';
+        text = '<img src="/img/description/pages.png" alt="' + title + '">';
+        text += 'Этот модуль позволяет создавать любые страницы с люой иерархией.';
+      break
+	  //Плагины
+      case 'redirgo':
+        title = 'RedirGo';
+        text = '<img src="" alt="' + title + '">';
+        text += 'Описание плагина.';
+      break
+      case 'bbcodes':
+        title = 'BBCodes';
+        text = '<img src="" alt="' + title + '">';
+        text += 'Описание плагина.';
+      break
+      case 'events':
+        title = 'События';
+        text = '<img src="" alt="' + title + '">';
+        text += 'Описание плагина.';
+      break
+      case 'gentags':
+        title = 'GenTags';
+        text = '<img src="" alt="' + title + '">';
+        text += 'Описание плагина.';
+      break
+      case 'lastcomments':
+        title = 'Последние комментарии';
+        text = '<img src="" alt="' + title + '">';
+        text += 'Описание плагина.';
+      break
+      case 'lastnews':
+        title = 'Последние новости';
+        text = '<img src="" alt="' + title + '">';
+        text += 'Описание плагина.';
+      break
+      case 'relmat':
+        title = 'Похожие материалы';
+        text = '<img src="" alt="' + title + '">';
+        text += 'Описание плагина.';
+      break
+      case 'ulogin':
+        title = 'uLogin';
+        text = '<img src="" alt="' + title + '">';
+        text += 'Описание плагина.';
+      break
+      case 'usersrating':
+        title = 'Рейтинг пользователей';
+        text = '<img src="" alt="' + title + '">';
+        text += 'Описание плагина.';
+      break
+      case 'votes':
+        title = 'Глобальные голосования';
+        text = '<img src="" alt="' + title + '">';
+        text += 'Описание плагина.';
+      break
+      default:
+        title = 'Упс! А описания то еще и нет';
+        text = '';
+    }
+
+    $('.modules li, .plugins li').removeClass('active');
+	
+	$('#infoblock h4').html(title);
+	$('#infoblock p').html(text);
+	
+	$("#infoblock").show('slow');
+	
+	if (flag == true) {
+	  $('#advantages .advent').show('slow');
+	  $('#infoblock').hide('slow');
+	} else { 
+	  $('.'+name).addClass('active'); 
+	}
+    }
+    </script>
+</head>
+<body>
+
+
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="navbar-inner">
+            <div class="container">
+                <div class="nav-collapse collapse pull-right">
+                    <ul class="nav">
+                        <li><a href="/news/">Новости</a></li>
+                        <li><a href="/forum/">Форум</a></li>
+                        <li><a href="https://github.com/Drunyacoder/AtomXCMS-2">Репозиторий</a></li>
+                        <li><a href="http://atomx.net/stat/category/27/">Вики</a></li>
+                    </ul>
+                </div>
+                <div class="nav-collapse collapse switchscreen">
+                    <ul class="nav">
+                        <li class="active top"><a href="#top" onclick="scroll(this); return false">Atom-X CMS</a></li>
+                        <li class="reviews"><a href="#reviews" onclick="scroll(this); return false">Отзывы</a></li>
+                        <li class="advantages"><a href="#advantages" onclick="scroll(this); return false">Преимущества</a></li>
+                        <li class="install"><a href="#install" onclick="scroll(this); return false">Установка</a></li>
+                        <li class="info"><a href="#info" onclick="scroll(this); return false">Инфо</a></li>
+                    </ul>
+                </div> 
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+    <div class="screen screen1 masthead" id="top">
+        <div class="container">
+            <div class="row-fluid">
+
+                <div class="span12">
+                    <div class="center">
+                        <div class="logo"></div>
+                        <div class="text"><b>Atom-X CMS</b> - это мощная, хорошо защищённая, не требовательная к ресурсам система управления сайтом, предназначенная для создания как сайта-визитки, так и мультимедийного портала с элементами социальной сети.</div>
+                        <br><br>
+                        <a class="btn btn-primary btn-large" href="#install" onclick="scroll(this); return false">Скачать сейчас *</a>
+                        <br><br><br><br>
+                        * скачать бесплатно без регистрации без смс на высокой скорости
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+    <div class="screen screen2" id="reviews">
+        <div class="data">
+            <div class="container">
+                <div class="row-fluid">
+                    <div class="span12">
+                        <div class="block center">
+                            <h2>О нас говорят</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="row-fluid">
+
+                    <div class="span6 list">
+                        <div class="block">
+                            <p>На своем продолжительном жизненном  пути в интернете я повидал не мало CMS, главным критериям для меня была простота использования и возможность создания своего собственного шаблона.
+                                AtomX(M) в данном плане меня полностью устраивает, адаптировать (верстать) шаблоны под данный движок одно удовольствие нету лишних меток, все делается буквально на лету.
+                                Немаловажным фактором, который меня привлек в данной CMS это встроенный модуль форум.
+                                Сколько вы видели бесплатных движков со встроенным форумом? Таких можно пересчитать по пальцам.
+                                Еще хотелось бы сказать, что движок постоянно эволюционирует, постоянно добавляются новые функции, команда сайта старается из-за всех сил и радует пользователей обновлениями каждый день.</p>
+                            <p class="whatname">Андрей Mishka Майоров</p>
+                        </div>
+
+                        <div class="block">
+                            <p>Atom-X - одна из самых удобных систем управления контентом, в которых мне приходилось работать.
+                                Доступ к разделам, модулям, страницам - все на виду, юзабилити проработано до мелочей.
+                                Добавить новость, статью или иной текст на сайт можно буквально парой кликов мыши.
+                                Надеюсь, Atom-X получит большое распространение и дальнейшее развитие.
+                                Отдельно благодарю Вас за своевременную профессиональную высококачественную техническую поддержку.</p>
+                            <p class="whatname">Александр -=DESTROY=- Дестроев</p>
+                        </div>
+                    </div>
+
+                    <div class="span6">
+                        <div class="block">
+                            <div style="text-align: center; padding: 15px">
+                                <script type="text/javascript" src="//yandex.st/share/share.js"
+                                charset="utf-8"></script>
+                                <div class="yashare-auto-init" data-yashareL10n="ru"
+                                data-yashareQuickServices="yaru,vkontakte,facebook,twitter,odnoklassniki,moimir" data-yashareTheme="counter"
+                                ></div>
+                            </div>
+                        </div>
+                        <div class="block vk">
+                            <script type="text/javascript" src="//vk.com/js/api/openapi.js?105"></script>
+                            <!-- VK Widget -->
+                            <div id="vk_subscribe"></div>
+                            <script type="text/javascript">
+                            VK.Widgets.Subscribe("vk_subscribe", {}, -24610975);
+                            </script>
+                        </div>
+                        <div class="tweetblock">
+                            <a class="twitter-timeline"  href="https://twitter.com/AtomXCMS"  data-widget-id="444770397846638592">Твиты пользователя @AtomXCMS</a>
+							<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class="screen screen3" id="advantages">
+        <div class="data">
+            <div class="container">
+                <div class="row-fluid">
+                    <div class="span12">
+                        <div class="block center">
+                            <h2>Преимущества</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="row-fluid">
+
+                    <div class="span6">
+                        <div class="block advent">
+                            <h4>Новейшие технологии</h4>
+                            <p>AtomX CMS построена с использованием самых новых технологий как PHP5, PDO, HTML5, jQuery, AJAX, ООП...</p>
+                        </div>
+                        <div class="block advent">
+                            <h4>Разделение html и php</h4>
+                            <p>Шаблоны содержат ТОЛЬКО html код и Javascript, php в них не работает(кроме сниппетов). Кроме повышения безопасности, это сделано и для того, чтобы дизайнеры могли просто создавать шаблоны, а не учиться программированию.</p>
+                        </div>
+                        <div class="block advent">
+                            <h4>Плагины и сниппеты</h4>
+                            <p>CMS имеет систему сниппетов, выполняющих php. С помощью них можно создать любой "глобальный блок" любого содержания.<br>
+                            Помимо сниппетов используется очень мощная система плагинов, которая позволяет расширять функционал базовых модулей.</p>
+                        </div>
+						<div class="block advent">
+                            <h4>ЧПУ</h4>
+                            <p>AtomX CMS использует новый доработанный ЧПУ (адреса понятные человеку), который вы сами сможете конфигурировать под ваш вкус и ваш проект.</p>
+                        </div>
+                        <div class="block advent">
+                            <h4>Разнообразие шаблонов</h4>
+                            <p>Темизации сайта уделяется больше всего внимания, ведь это очень важный фактор в создании сайта. Кроме простоты создания собственных шаблонов, вы можете найти множество готовых дизайнов для своего проекта от людей, любящих своё дело.</p>
+                        </div>
+                        <div class="block advent">
+                            <h4 class="active">Мы открыты!</h4>
+                            <p style="display:block">Сообщество AtomX CMS открыто для общения, помощи и обмена идеями. Кроме того, вы можете и сами принимать участие в разработке, <a href="https://bitbucket.org/AtomX/cms/wiki/Помощь_в_развитии_проекта">любым из способов</a>.</p>
+                        </div>
+					
+					<!--infoblock-->
+					<div class="block" id="infoblock">
+					    <div class="closebut" onclick="openinfo('closeinfo')"></div>
+						<h4></h4>
+					    <p></p>
+					</div>
+					<!--infoblock-->
+					
+                    </div>
+
+                    <div class="span6">
+                        <div class="block">
+                            <span class="pref">(Щелкните по иконке для просмотра описания)</span>
+							<h4>Модули</h4>
+							<ul class="modules">
+							     <li class="forum" onclick="openinfo('forum')"></li>
+							     <li class="users" onclick="openinfo('users')"></li>
+							     <li class="news" onclick="openinfo('news')"></li>
+							     <li class="stat" onclick="openinfo('stat')"></li>
+							     <li class="foto" onclick="openinfo('foto')"></li>
+							     <li class="loads" onclick="openinfo('loads')"></li>
+							     <li class="search" onclick="openinfo('search')"></li>
+							     <li class="statistika" onclick="openinfo('statistika')"></li>
+							     <li class="chat" onclick="openinfo('chat')"></li>
+							     <li class="pages" onclick="openinfo('pages')"></li>
+							</ul>
+                        </div>
+                        <div class="block" style="opacity:0">
+                            <h4>Плагины (в разработке)</h4>
+							<ul class="plugins">
+							     <li class="redirgo" onclick="openinfo('redirgo')"></li>
+							     <li class="bbcodes" onclick="openinfo('bbcodes')"></li>
+							     <li class="events" onclick="openinfo('events')"></li>
+							     <li class="gentags" onclick="openinfo('gentags')"></li>
+							     <li class="lastcomments" onclick="openinfo('lastcomments')"></li>
+							     <li class="lastnews" onclick="openinfo('lastnews')"></li>
+							     <li class="relmat" onclick="openinfo('relmat')"></li>
+							     <li class="ulogin" onclick="openinfo('ulogin')"></li>
+							     <li class="usersrating" onclick="openinfo('usersrating')"></li>
+							     <li class="votes" onclick="openinfo('votes')"></li>
+							</ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class="screen screen4" id="install">
+        <div class="data">
+            <div class="container">
+                <div class="row-fluid">
+                    <div class="span12">
+                        <div class="block center">
+                            <h2>Установка</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="row-fluid" >
+
+                    <div class="span8">
+                        <div class="block">
+                            <p style="padding-top: 5px"><b>1</b>. Зарегистрируйте хостинг (или установите веб-сервер на свой компьютер).<br><br>
+                                <b>2</b>. Распакуйте все файлы архива с CMS на хостинг<br><br>
+                                <b>3</b>. Выставьте права доступа 777 на следующие файл и папки рекурсивно:
+                                    <div style="padding-left: 30px"><i>/sys/logs/<br>
+                                    /sys/avatars/<br>
+                                    /sys/files/<br>
+                                    /sys/cache/<br>
+                                    /sys/tmp/<br>
+                                    /sys/fonts/<br>
+                                    /sys/settings/<br>
+                                    /sys/plugins/<br>
+                                    /templates/<br>
+                                    /sitemap.xml</i></div><br>
+
+                                * Рекурсивно это значит включая все подпапки и файлы. Это нужно выбрать при установке прав доступа.<br><br>
+                                <b>4</b>. После этого перейдите из браузера на свой сайт и следуйте инструкции.</p>
+                        </div>
+                    </div>
+
+                    <div class="span4 center">
+                        <div class="block w150">
+                            <br>
+                            <a class="btn btn-warning btn-large" href="http://home.develdo.com/downloads.php">Последняя сборка</a><br>
+                            <hr>
+                            <a class="btn btn-success btn-large" href="http://home.develdo.com/downloads.php">v2.5 RC1 (рекомендуем)</a><br><br>
+                            <a class="btn btn-success btn-large" href="http://home.develdo.com/downloads.php">v2.2 RC1</a><br><br>
+                            <a class="btn btn-success btn-large" href="http://home.develdo.com/downloads.php">v2.1 RC7</a><br>
+                            <hr>
+                            <a class="btn btn-primary btn-large" href="http://home.develdo.com/downloads.php">все версии</a><br><br>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <div class="screen screen5" id="info">
+        <div class="data">
+            <div class="container">
+                <div class="row-fluid" >
+
+                    <div class="span8">
+                        <div class="block history">
+						    <h3>О нас</h3>
+                            <p>
+                                Начну с небольшого лирического отступления. Как то раз <i>Андрей Drunya Брыкин</i> захотел создать свой сайт. Открыл форум на одном из сервисов, потом сайт на юкоз... И тогда его посетила мысль, что сайт не его: он принадлежит юкозу.
+                                Почитав немного статей о раскрутке он, к тому же, понял, что такой сайт нереально серьезно раскрутить. Тогда он собрался с мыслями и начал искать готовые CMS, но вскоре был просто поражен тем, что действительно удобного и в тоже время гибкого, решения так и не нашел.
+                            </p>
+                            <p>
+                                С тех пор он начал делать свою CMS. Сначала только для своего сайта, потом выложил в открытый доступ.
+                                Время шло, движок развивался. Было много критики, но ещё больше одобрения и помощи. Множество людей внесли свой вклад в развитие движка.
+                            </p>
+                            <p>
+                                Через какое то время разработка переместилась в Git, <i>Александр modos189 Данилов</i> и <i>Александр Wasja Вереник</i> создали ответвления, в которых меняли движок под своё видение.
+                                С этих пор можно начинать отсчёт существования AtomX, ведь на основе форка <i>modos189</i> был создан общий репозиторий, в который может добавить своё изменение любой желающий, если, конечно, никто не будет против.
+                            </p>
+                            <p>
+                                Сейчас в разработчиках <b>AtomX</b> также <i>Борис MrBoriska Лапин</i>, делающий из всего дизайна CMS конфетку.
+                                Но нельзя не упомянуть и таких людей как <i>Александр -=DESTROY=- Дестроев</i>, который помог найти множество багов, ныне уже исправленных, и <i>Андрей Mishka Майоров</i>, улучшающий плагины.
+                            </p>
+                            <p>
+                                Присоединяйся и ты! Да, ты, читающий это сообщение!
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="span4 center">
+                        <div class="block w150">
+                            <p style="padding-top: 5px">
+                                <h5>Также не откажемся от финансовой помощи. Нам ведь надо покупать хостинги, рекламу, кофе, ну вы поняли.</h5>
+                                <br>
+
+                                <h4>Drunya</h4>
+                                <h6>представитель Atom-X</h6>
+                                Z320956365350<br>
+                                U237030902343<br>
+                                R405239497933
+								
+								<br><br><br>
+                                <h4>modos189</h4>
+                                <h6>представитель Atom-M</h6>
+                                Z320956365350<br>
+                                U237030902343<br>
+                                R405239497933
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="js/plusstrap.min.js"></script>
+	<div style="position:absolute;left:-500px;">{[liveinternet]}</div>
+</body>
+</html>

@@ -1,0 +1,25 @@
+.block { 
+font-family: Arial,sans-serif; 
+overflow: hidden; 
+font-size: 13px; 
+background: #FCFCFC; 
+border: 1px solid #ddd; 
+margin-bottom: 3px; 
+padding: 3px;
+text-align: left;
+line-height: 15px;
+}
+.block:hover {background: #FFF;border: 1px solid #BBB;}
+.block .fps-ip, .fps-del, .fps-user {
+width:14px; 
+height:14px; 
+display:block; 
+float:left; 
+margin: 0 2px; 
+background:url('../img/fps-icons-sprite.png') no-repeat;
+}
+.block .fps-user {background-position:-14px 0;}
+.block .fps-ip {background-position:0px -154px;}
+.block .fps-del {background-position:0px 0px;}
+.block .name {color:#C18D3F; text-decoration: none;}
+.block .mess {font-size: 12px;color:#525252;padding-top: 3px;white-space: normal;word-wrap: break-word;overflow: hidden;}

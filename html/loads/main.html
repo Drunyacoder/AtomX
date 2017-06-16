@@ -1,0 +1,264 @@
+<!doctype html>
+<html>
+<head>
+<title>{{ title }}</title>
+
+<meta name="description" content="{{ meta_description }}" />
+<meta name="keywords" content="{{ meta_keywords }}" />
+<meta charset="UTF-8"/>
+
+<meta name='author' content='Andrey Brykin' />
+<meta name='robots' content='index, follow' />
+<meta name='rating' content='general' />
+<meta name='generator' content='Atom-X CMS' />
+
+<link rel="icon" href="{{ template_path }}/favicon.ico" type="image/x-icon" />
+<link rel="shortcut icon" href="{{ template_path }}/favicon.ico" type="image/x-icon" />
+<link type="text/css" rel="StyleSheet" href="{{ template_path }}/css/style.css" />
+<script language="JavaScript" type="text/javascript" src="{{ www_root }}/sys/js/jquery.js"></script>
+<script language="JavaScript" type="text/javascript" src="{{ www_root }}/sys/js/send_message.js"></script>
+
+<script type="text/javascript" src="{{ template_path }}/js/default.js"></script>
+
+{{ editor_head }}
+
+<!-- FancyBOX -->
+<link type="text/css" rel="StyleSheet" href="{{ template_path }}/css/fancy.css" />
+<script type="text/javascript" src="{{ template_path }}/js/jquery.fancybox.js"></script>
+<!--/FancyBOX -->
+
+<script type="text/javascript">
+{% if fps_user_id %}
+	check_pm('{{ fps_user_id }}');
+{% endif %}
+</script>
+</head>
+
+
+<body>
+<div class="headpanel">
+ <div class="linksap">
+<div class="activewindow">
+	<a href="javascript:void(0)">{{ 'Language'|lang }}</a>
+	<div class="lang" style="width: 70px;">
+		<a href="{{ www_root }}/rus">RUS</a>
+		<a href="{{ www_root }}/eng">ENG</a>
+	</div>
+	<script>
+		$(function(){
+			var path = window.location.pathname.replace(/\/(rus|eng)/, '');
+			$('.lang a:eq(0)').attr('href', $('.lang a:eq(0)').attr('href') + path + window.location.search);
+			$('.lang a:eq(1)').attr('href', $('.lang a:eq(1)').attr('href') + path + window.location.search);
+		});
+	</script>
+</div>
+<div><a href="//atomx.net/users/info/1/" rel="nofollow">{{ 'Contacts'|lang }}</a></div>
+<div><a href="//github.com/VictorSproot/AtomX" rel="nofollow">GitHub</a></div>
+<div><a href="//atomx.net/forum/" rel="nofollow">{{ 'Support'|lang }}</a></div>
+
+</div>
+ <div class="userlinksap">
+{% if fps_user_id %}
+<div><a href="{{ get_url('/users/pm/') }}">{{ 'Message'|lang }}</a></div>
+<div class="activewindow"><a href="{{ personal_page_link }}">{{ fps_user_name }}</a><div class="miniprofileadm" style="width: 300px;padding: 10px;{% if fps_admin_access == 1 %}height:120px;{% endif %}">
+    <span class="avatarminpro"><img class="avatar" src="{{ getAvatar(fps_user.id) }}" alt=""/></span>
+    <span class="uslinkminpro">
+        <a href="{{ personal_page_link }}">{{ 'Profile'|lang }}</a>
+        <a href="{{ get_url('/users/pm_send_form/') }}">{{ 'Send a message'|lang }}</a>
+		<a href="{{ get_url('/users/edit_form/' ~ fps_user_id) }}">{{ 'Settings'|lang }}</a>
+        {% if fps_admin_access == 1 %}
+		<a href="{{ get_url('/admin/') }}" target="_blank">{{ 'Admin panel'|lang }}</a>
+		{% endif %}
+    </span>
+</div></div>
+<div><a href="{{ get_url('/users/logout/') }}">{{ 'Exit'|lang }}</a></div>
+{% else %}
+<div class="ulogin">{{ ulogin }}</div>
+<div><a href="{{ get_url('/users/add_form/') }}">{{ 'Registration'|lang }}</a></div>
+<div class="activewindow"><a href="{{ get_url('/users/login_form/') }}">{{ 'Enter'|lang }}</a>
+<div style="width: 260px;"><span>
+<form id="mloginForm" action="{{ get_url('/users/login/?ajax') }}" method="post">
+	{{ 'Login'|lang }}: <input type="text" class="loginad" name="username">
+	{{ 'Password'|lang }}: <input type="password" class="passad" name="password">
+	{{ 'The autologin'|lang }}: <input type="checkbox" name="autologin" value="1">
+	<button type="submit" onclick="sendu('mloginForm'); return false" class="buttonadm">{{ 'Enter'|lang }}</button>
+	<input type="hidden" value="submit" name="submitForm">
+</form>
+</span></div></div>
+{% endif %}
+<div><a href="{{ get_url('/users/') }}">{{ 'Users'|lang }}</a></div>
+ </div>
+</div>
+<div class="global">
+<div class="header">
+   <a href="{{ get_url('/') }}"><div class="logohead"></div></a>
+   <div class="infohead">
+	 <div class="sots">
+		<a href="https://github.com/Drunyacoder/AtomXCMS-2/releases">{{ 'Download CMS'|lang }}</a>
+		<a href="{{ get_url('/stat/category/27/') }}">{{ 'DOCUMENTATION'|lang }}</a>
+		<a href="//atomx.net/loads/category/5/">{{ 'TEMPLATES'|lang }}</a>
+		<a href="//atomx.net/forum/view_theme/362/">{{ 'SNIPPETS'|lang }}</a>
+		<a href="//atomx.net/forum/view_forum/38/">{{ 'PLUGINS'|lang }}</a>
+		<a href="//atomx.net/forum/view_forum/2/">{{ 'MODULES'|lang }}</a>
+	 </div>
+   </div>
+</div>
+
+<div class="sider">
+    <div class="sidertop bigmenu">
+	  {{ mainmenu }}
+	  <div class="search">
+	   <form method="POST" action="{{ get_url('/search/') }}"> 
+        <input type="hidden" name="subaction" value="search"> 
+        <input name="search" placeholder="Найти что-нибудь..." type="text"> 
+        <input value="GO!" type="submit" name="send"> 
+       </form> 
+	  </div>
+	</div>
+	<!---------------------------------------------------------------------------CONTENT/----------------------------------------------------------------------------------------------->
+    <div class="content">
+<div class="materials" id="full">
+	<div class="rightbloks">
+		<div class="block">
+		  <div class="blockstop">{{ 'Voting'|lang }}</div>
+		  <div class="blokscontent pl_votes"><ul class="mini_list">{{ pl_votes }}</ul></div>
+		</div>
+		<div class="block">
+		  <div class="blockstop">{{ 'Top news'|lang }}</div>
+		  <div class="blokscontent"><ul class="mini_list">{{ pop_news }}</ul></div>
+		</div>
+		<div class="block">
+		  <div class="blockstop">{{ 'Recent comments'|lang }}</div>
+		  <div class="blokscontent last_comments">{{ last_comments }}</div>
+		</div>
+		<div class="block">
+		  <div class="blockstop">{{ 'Top users'|lang }}</div>
+		  <div class="blokscontent users_rating">{{ users_rating }}</div>
+		</div>
+		<div class="block">
+		  <div class="blockstop">{{ 'Sites on AtomX CMS'|lang }}</div>
+		  <div class="blokscontent">
+		  <ul class="mini_list">
+			 <li><img src="{{ template_path }}/favicon.ico" height="16" width="16" alt=""/><a href="//atomx.net" title="Официальный сайт AtomX CMS" rel="nofollow">Оф.Сайт. AtomX CMS</a></li>
+			 <li><img src="//atom-m.net/favicon.ico" height="16" width="16" alt=""/><a href="//atom-m.net" title="Презентационная страница AtomM CMS" rel="nofollow">Презентационная страница AtomM</a></li>
+			<li><img src="{{ template_path }}/favicon.ico" height="16" width="16" alt=""/><a rel="nofollow" href="http://vrc.softtechnics.biz/">VRC</a></li>
+			<li><img src="//odessaokna.com.ua/sys/img/favicon.ico" height="16" width="16" alt=""/><a rel="nofollow" href="http://odessaokna.com.ua/">Kristall</a></li>
+			<li><img src="{{ template_path }}/favicon.ico" height="16" width="16" alt=""/><a rel="nofollow" href="http://design-decor.od.ua">Дизайн интерьера</a></li>
+			<li><img src="http://2centos.ru/sys/img/favicon.ico" height="16" width="16" alt=""/><a rel="nofollow" href="http://2centos.ru/">Настройка сервера</a></li>
+		  </ul>
+		  </div>
+		</div>
+	</div>
+	<div class="leftblocks">
+		<div class="spedbar">
+			<div>
+				<div>{{ navigation }}</div>
+			</div>
+		</div>
+		{% if add_link %}<a href="{{ get_url('/' ~ module ~ '/add_form/') }}" class="lastpostsbutton button">{{ 'Add'|lang }}</a>{% endif %}
+		<div style="clear:both;"></div>
+		{% if pagination %}<div class="mezdyblock"><span class="meta">{{ meta }}</span><div class="paginator"><div class="pages">{{ pagination }}</div></div></div>{% endif %}
+		{{ content }}
+		{% if pagination %}<div class="mezdyblock"><div class="paginator"><div class="pages">{{ pagination }}</div></div></div>{% endif %}
+		{% if comments_pagination %}<div class="mezdyblock"><div class="paginator"><div class="pages">{{ comments_pagination }}</div></div></div>{% endif %}
+		{{ comments_form }}
+		{{ comments }}
+		{% if comments_pagination %}<div class="mezdyblock"><div class="paginator"><div class="pages">{{ comments_pagination }}</div></div></div>{% endif %}
+		
+		{% if categories %}<div class="material2"><div class="inftitle">Категории:</div><div class="infcont"><ul>{{ categories }}</ul></div></div>{% endif %}
+	</div>
+</div>
+	<div class="material2">
+           <div class="inftitle">Сейчас online: {{ all_online }}. Зарегистрированных: {{ users_online }}. Гостей: {{ guests_online }}. </div>
+	       <div class="infcont">{{ online_users_list }}</div>
+	    </div>
+	</div>
+	<!---------------------------------------------------------------------------/CONTENT----------------------------------------------------------------------------------------------->
+</div>
+<!--------------------------------------------------------CHAT----------------------------------------------------------------------------------------------------------------------------->
+<!--{% if fps_chat %}
+<div class="footerbottom">
+  <div class="butofooter"><a class="buttonfutokno" onclick="ochat()">{{ 'General chat'|lang }}</a>
+    <div class="messegesokno" id="ochat" style="display:none;">
+      <span class="headfutbutton">{{ 'General chat'|lang }}<span class="closebuttonfut" onclick="ochat()"></span></span>
+	  {{ fps_chat }}
+    </div>
+  </div>
+</div>
+<!--<script type="text/javascript">$(function(){ochat_auto();});</script>-->
+{% endif %}-->
+<!--------------------------------------------------------FOOTER-BUTTONS------------------------------------------------------------------>
+<div class="footer">
+<div class="people"><span>{{ 'Community'|lang }}</span>{{ mainmenu }}</div>
+<div class="support"><span>{{ 'Support'|lang }}</span>
+<a href="//home.develdo.com/downloads.php">{{ 'User agreement'|lang }}</a>
+<br><a href="{{ get_url('/stat/category/27/') }}" rel="nofollow">{{ 'Documentation'|lang }}</a>
+<br><a href="{{ get_url('/users/add_form/') }}">{{ 'Website rules'|lang }}</a>
+<!--<br><a href="#">Заказать рекламу</a>-->
+<br><a href="{{ www_root }}/sitemap.xml">{{ 'Site map'|lang }}</a>
+</div>
+<div class="faposcms"><span>Atom-X CMS</span>
+<a href="https://github.com/Drunyacoder/AtomXCMS-2/releases" rel="nofollow">{{ 'Download CMS'|lang }}</a>
+<br><a href="//atomx.net/documa/?p=videotuts" rel="nofollow">{{ 'Video guide'|lang }}</a>
+<br><a href="//atomx.net/forum/view_forum/4" rel="nofollow">{{ 'To report a bug'|lang }}</a>
+</div>
+<div style="float: right;padding: 0;">
+<div class="socnet" style="display:block;">
+<a href="//vk.com/atomx_cms" target="_blank" class="vk" title="ВКонтакте" rel="nofollow"></a>
+<a href="//twitter.com/AtomXCMS" target="_blank" class="twitter" title="Twitter" rel="nofollow"></a>
+<a href="//www.facebook.com/fapos" target="_blank" class="fb" title="Facebook" rel="nofollow"></a>
+<!--<a href="#" target="_blank" class="goplus" title="Google Plus" rel="nofollow"></a>-->
+<a href="//github.com/Drunyacoder/AtomXCMS-2" target="_blank" class="github" title="GitHub" rel="nofollow"></a>
+<!--<a href="https://bitbucket.org/atom-m/cms" target="_blank" class="bitbucket" title="BitBucket" rel="nofollow"></a>-->
+<a href="http://youtu.be/7GYpzleSWUU" target="_blank" class="youtube" title="YouTube" rel="nofollow"></a>
+<!--<a href="#" target="_blank" class="skype" title="Skype" rel="nofollow"></a>-->
+<span class="rss">
+   <div>
+      <a href="{{ get_url('/news/rss/') }}" target="_blank" title="RSS - Новости" rel="nofollow">{{ 'News'|lang }}</a>
+      <a href="{{ get_url('/stat/rss/') }}" target="_blank" title="RSS - Статьи" rel="nofollow">{{ 'Articles'|lang }}</a>
+      <a href="{{ get_url('/forum/rss/') }}" target="_blank" title="RSS - Форум" rel="nofollow">{{ 'Forum'|lang }}</a>
+      <a href="{{ get_url('/loads/rss/') }}" target="_blank" title="RSS - Файлы" rel="nofollow">{{ 'Files'|lang }}</a>
+      <a href="{{ get_url('/foto/rss/') }}" target="_blank" title="RSS - Фотографии" rel="nofollow">{{ 'Photo catalog'|lang }}</a>
+   </div>
+</span>
+</div>
+<div>Generated by {{ powered_by }}<br>Design by boriska © {{ fps_year }}</div>
+</div>
+<!-- Yandex.Metrika counter -->
+<script type="text/javascript">
+    (function (d, w, c) {
+        (w[c] = w[c] || []).push(function() {
+            try {
+                w.yaCounter32245024 = new Ya.Metrika({
+                    id:32245024,
+                    clickmap:true,
+                    trackLinks:true,
+                    accurateTrackBounce:true,
+                    webvisor:true,
+                    ut:"noindex"
+                });
+            } catch(e) { }
+        });
+
+        var n = d.getElementsByTagName("script")[0],
+            s = d.createElement("script"),
+            f = function () { n.parentNode.insertBefore(s, n); };
+        s.type = "text/javascript";
+        s.async = true;
+        s.src = "https://mc.yandex.ru/metrika/watch.js";
+
+        if (w.opera == "[object Opera]") {
+            d.addEventListener("DOMContentLoaded", f, false);
+        } else { f(); }
+    })(document, window, "yandex_metrika_callbacks");
+</script>
+<noscript><div><img src="https://mc.yandex.ru/watch/32245024?ut=noindex" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+<!-- /Yandex.Metrika counter -->
+<noindex style="float:right;"><img src="{{ counter }}" alt=""/>{[liveinternet]}</noindex>
+</div>
+</div>
+<audio id="pm-sound-notification"> 
+  <source src="{{ template_path }}/sound_notify.mp3"> 
+</audio>
+</body>
+</html>

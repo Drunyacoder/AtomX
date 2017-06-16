@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>AtomX free CMS / AtomX - Бесплатная CMS</title>
+<meta name="description" content="{{ meta_description }}" />
+<meta name="keywords" content="{{ meta_keywords }}" />
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+
+<meta name='author' content='Andrey Brykin' />
+<meta name='robots' content='index, follow' />
+<meta name='rating' content='general' />
+<meta name='generator' content='FaposCMS 2.4' />
+
+
+<link rel="icon" href="{{ template_path }}/favicon.ico" type="image/x-icon" />
+<link rel="shortcut icon" href="{{ template_path }}/favicon.ico" type="image/x-icon" />
+<link href="{{ template_path }}/css/base.css" rel="stylesheet" media="screen" type="text/css"/>
+<!--[if lte IE 9]>
+<link href="{{ template_path }}/css/ie9.css" rel="stylesheet" media="screen" type="text/css"/>
+<![endif]-->
+<!--[if lte IE 8]>
+<link href="{{ template_path }}/css/ie8.css" rel="stylesheet" media="screen" type="text/css"/>
+<![endif]-->
+<script src="{{ template_path }}/js/jquery.js"></script>
+<link href="{{ template_path }}/css/fancy.css" rel="stylesheet" media="screen" type="text/css"/>
+<script src="{{ template_path }}/js/jquery.fancybox.js"></script>
+<script src="{{ template_path }}/js/new_round.js"></script>
+<script>
+AtomX = {};
+autoslide_time = 3000;
+
+// splash screen
+AtomX.loaderReady = false;
+AtomX.documentLoaded = false;
+AtomX.enableScroll = false;
+setTimeout(function(){
+	AtomX.loaderReady = true;
+	console.log('loaderReady');
+}, 2500);
+$(window).load(function(){
+	AtomX.documentLoaded = true;
+	console.log('documentLoaded');
+	
+	$(window).stop().scrollTop(0);
+	$(document).scrollTop(0);
+	setTimeout(function(){
+		AtomX.enableScroll = true;
+	}, 100);
+});
+
+$(function(){
+	$("a.gallery").fancybox();
+	$('.hr').click(function(){
+		moveTo($(this).data('to'));
+	});
+	$('a.title').click(function(){
+		var item = $(this);
+		downloadVersion(item.attr('href'));
+		return false;
+	});
+	$('body').click(function(e){
+		if ($('.popup').is(':visible') && e.target.className != 'popup') {
+			$('.popup').fadeOut();
+		}
+	});
+	
+	// splash screen
+	var check = function() {
+		$(window).stop().scrollTop(0);
+		$(document).scrollTop(0);
+		var viewportSize = ($(window).innerHeight() > 700) ? $(window).innerHeight() : 700;
+		
+		$('body').css({width: '100%', position:'fixed', overflow: 'hidden'});
+		$('.loader-overlay').css({'height': viewportSize});
+
+		console.log('Could start the splash animation? '+(AtomX.loaderReady === true && AtomX.documentLoaded === true));
+		if (AtomX.loaderReady === true && AtomX.documentLoaded === true) load();
+		else setTimeout(function(){check();}, 500);
+		
+	}
+	var load = function(){
+		$('.map').css('animation-play-state', 'running');
+		$('.country').css('animation-play-state', 'running');
+		
+		// initialize off animation
+		setTimeout(function(){
+			console.log('Start the finish animation.');
+			$('.globus').css({
+				'animation-name': 'loader, loader-off',
+				'animation-delay': '.5s, 0s',
+				'animation-duration': '2s, 1s'
+			});
+			$('.globus .viewport').css('animation-play-state', 'running');
+			setTimeout(function(){
+				console.log('Hide the splas screen.');
+				$('.loader-overlay').animate({'opacity':'0'}, 500, function(){
+					$('.loader-overlay').css('display', 'none');
+				});
+				$('html').css({'height': 'auto', 'overflow-y': 'auto'});
+				$('body').css('height', $('body').css('height'));
+				$('body').css({'overflow-y': 'auto', 'position': 'static'});
+			}, 1200);
+		}, 2500);
+	}
+	if ($('.loader-overlay').is(':visible') && $('.globus').is(':visible')) check();
+	
+
+	// replace the elements to positions
+	var viewportSize = ($(window).innerHeight() > 700) ? $(window).innerHeight() : 700;
+	var elems = ['.opisalovo', '.versions-slider', '.coment_bl'];
+	//var bothIndents = viewportSize / 4;
+	var bothIndents = 0;
+	//var lastOffset = viewportSize;
+	var lastOffset = $('.section-1').offset().top + $('.section-1').outerHeight(true) + bothIndents + 200;
+	for (k in elems) {
+		var kk = 1+parseInt(k);
+		var elem = $(elems[k]);
+		
+		var separatorTop = lastOffset + 100;
+		$('.hr:eq('+k+')').css('top', separatorTop+'px');
+		lastOffset = $('.hr:eq('+k+')').offset().top + $('.hr:eq('+k+')').height();
+		
+		var elemTop = lastOffset + bothIndents;
+		elem.css('top', elemTop+'px');
+		lastOffset = elem.offset().top + elem.outerHeight(true) + bothIndents;
+		$('body').height((elemTop + elem.height()) + 200);
+	}
+	
+
+    AtmDefaultOffset = $('.slideable').offset().left + $('.slideable').width();
+    AtmViewportOffset = $('.versions-slider .viewport').offset().left;
+	Separators = [];
+	StepsPrescroll = [];
+
+	
+    $('.slideable').on('mousedown', function(e){
+        var viewport = $('.viewport').addClass('dragable-viewport');
+        var slider = $(this).addClass('dragable');
+        var wind = $(window)[0];
+		var edgesPadding = 150;
+
+		// drag version slider
+		slider.parents().on('mousemove', function(e){
+			var newsliderpos = e.clientX - ($('.dragable').width() / 2),
+				offsetprn = (newsliderpos / (wind.innerWidth - (edgesPadding * 2))),
+				newviewportpos = parseInt((viewport.width() - wind.innerWidth) * offsetprn) - edgesPadding;
+			
+			if (newsliderpos <= (wind.innerWidth - ($('.dragable').width() + edgesPadding)) && newsliderpos > edgesPadding) {
+				$('.dragable').offset({
+					left: newsliderpos
+				});
+				$('.dragable-viewport').offset({
+					left: -newviewportpos
+				});
+			}
+		}).on('mouseup', function(e){
+			$('.dragable').removeClass('dragable');
+			$('.dragable-viewport').removeClass('dragable-viewport');
+		}); 
+		e.preventDefault(); 
+    }).on('mouseup', function(e){
+		$(this).removeClass('dragable');
+		$('.dragable-viewport').removeClass('dragable-viewport');
+	});
+
+	
+	
+	$(document).scroll(function(e){
+		event = $(e)[0];
+		pageY = $(document.body).scrollTop() || $(window).scrollTop();
+		var autoScrollRange = (viewportSize / 2) + 100;
+		
+		
+		// Separators
+		$('.hr').each(function(index, item){
+			var event = $(e)[0];
+			var item = $(item);
+			var coeficient = 600;
+			var divideCoeficient = 30;
+			if (navigator.userAgent.toLowerCase().indexOf('chrome') > -1) {
+				coeficient = 800;
+				divideCoeficient = 20;
+			}
+
+			if (typeof Separators[index] == 'undefined') {
+				Separators[index] = item.offset().top;
+				var itemOffsetTop = item.offset().top;
+			} else {
+				var itemOffsetTop = Separators[index];
+			}
+
+			if (pageY >= (itemOffsetTop - coeficient)) {
+				var paravalue = (pageY - (itemOffsetTop - coeficient)) / divideCoeficient;
+				paravalue = paravalue * paravalue;
+				//var cureent = parseInt(item.css('top'));
+				var cureent = itemOffsetTop;
+				var newpos = parseInt(cureent - paravalue);
+				if (newpos + item.height() > 0) {
+					item.css("top", parseInt(cureent - paravalue) + 'px');
+				}
+				if (item.offset().top < pageY) {
+					item.hide(500);
+				}
+			}
+		});
+
+
+		// STEP 2
+		if (pageY >= ($('.versions-slider').offset().top - autoScrollRange)) {
+			if (typeof StepsPrescroll['versions-slider'] == 'undefined' && AtomX.enableScroll == true) {
+				StepsPrescroll['versions-slider'] = true;
+				moveTo('versions-slider', function(){
+					$('.versions-slider').css("animation-play-state", 'running');
+					$('.item').css("animation-play-state", 'running');
+					$('.content').css("animation-play-state", 'running');
+				});
+			}
+			
+			setTimeout(function(){
+				AtmDefaultOffset = $('.slideable').offset().left + $('.slideable').width();
+				AtmViewportOffset = $('.viewport').offset().left;
+			}, 2500);
+		}
+		/*
+		if (typeof StepsPrescroll['versions-slider'] != 'undefined') {
+			if (pageY >= ($('.versions-slider').offset().top + $('.versions-slider').outerHeight()) ||
+				(pageY + viewportSize) <= $('.versions-slider').offset().top
+			) {
+				if ($('.versions-slider').is(':visible')) $('.versions-slider').stop().fadeOut(500);
+			} else {
+				if (!$('.versions-slider').is(':visible')) $('.versions-slider').stop().fadeIn(500);
+			}
+		}
+		*/
+		
+		
+		// STEP 3
+		if (pageY >= ($('.opisalovo').offset().top - autoScrollRange)) {
+			if (typeof StepsPrescroll['opisalovo'] == 'undefined' && AtomX.enableScroll == true) {
+				StepsPrescroll['opisalovo'] = true;
+				moveTo('opisalovo', function(){
+					$('.opisalovo .content').css("animation-play-state", 'running');
+					$('.circle').css("animation-play-state", 'running');
+				});
+			}
+		}
+		/*
+		if (typeof StepsPrescroll['opisalovo'] != 'undefined') {
+			if (pageY >= ($('.opisalovo').offset().top + $('.opisalovo').outerHeight()) ||
+				(pageY + viewportSize) <= $('.opisalovo').offset().top
+			) {
+				if ($('.opisalovo').is(':visible')) $('.opisalovo').stop().fadeOut(500);
+			} else {
+				if (!$('.opisalovo').is(':visible')) $('.opisalovo').stop().fadeIn(500);
+			}
+		}
+		*/
+		
+		
+		// STEP 4
+		if (pageY >= ($('.coment_bl').offset().top - autoScrollRange)) {
+			if (typeof StepsPrescroll['coment_bl'] == 'undefined' && AtomX.enableScroll == true) {
+				StepsPrescroll['coment_bl'] = true;
+				moveTo('coment_bl', function(){
+					$('.coment_holder').css("animation-play-state", 'running');
+					$('.social_icon').css("animation-play-state", 'running');
+				});
+			}
+		}
+		/*
+		if (typeof StepsPrescroll['coment_bl'] != 'undefined') {
+			if (pageY >= ($('.coment_bl').offset().top + $('.coment_bl').outerHeight()) ||
+				(pageY + viewportSize) <= $('.coment_bl').offset().top
+			) {
+				if ($('.coment_bl').is(':visible')) $('.coment_bl').stop().fadeOut(500);
+			} else {
+				if (!$('.coment_bl').is(':visible')) $('.coment_bl').stop().fadeIn(500);
+			}
+		}
+		*/
+	});
+});
+</script>
+
+</head>
+<body>
+<a onClick="moveTo('versions-slider')" class="download" href="javascript:void(0);"></a>
+<a class="logo" href="/" title="Free AtomX CMS"></a>
+<div class="section-1">
+	<div class="menu">
+		<ul>
+			<li><a onClick="moveTo('opisalovo');" href="javascript:void(0);">Что это?</a></li>
+			<li><a onClick="moveTo('versions-slider');" href="javascript:void(0);">Скачать</a></li>
+			<li><a href="/demo/">Демо-сайт</a></li>
+			<li><a href="/news/">Новости</a></li>
+			<li><a href="/loads/category/5/">Шаблоны</a></li>
+			<li><a href="/forum/">Форум</a></li>
+			<li>
+				<a href="/stat/category/27/">Документация</a>
+				<ul>
+					<li><a href="/stat/category/30/">Установка и обновление</a></li>
+					<li><a href="/stat/category/28/">Дизайн и шаблоны</a></li>
+					<li><a href="/stat/category/29/">Для разработчиков</a></li>
+				</ul>
+			</li>
+		</ul>
+	</div>
+	<div class="text"></div>
+   <div id="intro_wrapper" class="intro_wrapper_3d">
+		<div class="intro_home intro_home_3d">
+			<a class="left_arr"></a>
+			<div class="slider_3d">
+				<div class="slider_3d_c"><a href="{{ template_path }}/img/splash/img1.jpg" class="gallery"><img src="{{ template_path }}/img/splash/img1.jpg" /></a></div>
+				<div class="slider_3d_r1"><a href="{{ template_path }}/img/splash/img1.jpg" class="gallery"><img src="{{ template_path }}/img/splash/img2.jpg" /></a></div>
+				<div class="slider_3d_r2"><a href="{{ template_path }}/img/splash/img1.jpg" class="gallery"><img src="{{ template_path }}/img/splash/img3.jpg" /></a></div>
+				<div class="slider_3d_none"><a href="{{ template_path }}/img/splash/img1.jpg" class="gallery"><img src="{{ template_path }}/img/splash/img4.jpg" /></a></div>
+				<div class="slider_3d_none"><a href="{{ template_path }}/img/splash/img1.jpg" class="gallery"><img src="{{ template_path }}/img/splash/img5.jpg" /></a></div>
+				<div class="slider_3d_none"><a href="{{ template_path }}/img/splash/img1.jpg" class="gallery"><img src="{{ template_path }}/img/splash/img6.jpg" /></a></div>
+				<div class="slider_3d_none"><a href="{{ template_path }}/img/splash/img1.jpg" class="gallery"><img src="{{ template_path }}/img/splash/img1.jpg" /></a></div>
+				<div class="slider_3d_none"><a href="{{ template_path }}/img/splash/img1.jpg" class="gallery"><img src="{{ template_path }}/img/splash/img2.jpg" /></a></div>
+				<div class="slider_3d_none"><a href="{{ template_path }}/img/splash/img1.jpg" class="gallery"><img src="{{ template_path }}/img/splash/img3.jpg" /></a></div>
+				<div class="slider_3d_none"><a href="{{ template_path }}/img/splash/img1.jpg" class="gallery"><img src="{{ template_path }}/img/splash/img4.jpg" /></a></div>
+				<div class="slider_3d_none"><a href="{{ template_path }}/img/splash/img1.jpg" class="gallery"><img src="{{ template_path }}/img/splash/img5.jpg" /></a></div>
+				<div class="slider_3d_none"><a href="{{ template_path }}/img/splash/img1.jpg" class="gallery"><img src="{{ template_path }}/img/splash/img6.jpg" /></a></div>
+				<div class="slider_3d_l2"><a href="{{ template_path }}/img/splash/img1.jpg" class="gallery"><img src="{{ template_path }}/img/splash/img1.jpg" /></a></div>
+				<div class="slider_3d_l1"><a href="{{ template_path }}/img/splash/img1.jpg" class="gallery"><img src="{{ template_path }}/img/splash/img2.jpg" /></a></div>            
+			</div>
+			<a class="right_arr"></a>
+		</div>
+	</div>
+	<div style="clear:both;"></div>
+</div>
+<div data-to="opisalovo" class="hr">&nbsp;</div>
+<div class="opisalovo">
+	<div class="content">
+		<div class="circle"><div>Множество модулей</div></div>
+		<div class="circle"><div>Плагины и сниппеты</div></div>
+		<div class="circle"><div>Ajax Чат</div></div>
+		<div class="circle"><div>Открытая разработка</div></div>
+		<div class="circle"><div>Статистика</div></div>
+		<div class="circle"><div>Высокая скорость</div></div>
+		<div class="circle"><div>SEO оптимизация</div></div>
+		<div class="circle"><div>Поддержка и развитие</div></div>
+		<div class="circle"><div>Расширяемая структура</div></div>
+		<div class="circle"><div>Легкое освоение</div></div>
+		<div class="circle"><div>Готовые шаблоны</div></div>
+		<div class="left">
+			<h1>О AtomX CMS</h1>
+			<p>AtomX CMS - это <strong>бесплатная CMS</strong>, распространяемая на свободной основе и имеющая открытый исходный код.
+			Вы можете сами дополнять/менять систему как Вам угодно. Для работы AtomX нужен сервер 
+			с поддержкой PHP 5.3 и MySQL базой данных.</p>
+			
+			<p>AtomX обладает рядом уникальных характеристик и построен по модульной архитектуре, 
+			очень приближенной к MVC, за исключением того, 
+			что контроллеры зовутся модулями. Административный интерфейс, плагины, сниппеты и 
+			возможность создавать любые страницы с любой вложенностью дают хороший потенциал Вашему сайту. Хотя этим возможности 
+			AtomX далеко не ограничиваются. Например, не каждая CMS может похвастаться скоростью генерации страниц за сотые доли секунды
+			без кэширования.</p>
+			
+			<p>Так же AtomX CMS поддерживает многоязычность и легкое добавление новых языков, Twig-подобный мощный шаблонизатор, возможность автоматической загрузки и установки плагинов и целую пачку готовых модулей, например форум, каталог фото, новости, статистика, поиск и т.д. К стати, такой простой установки как у AtomX CMS Вы еще не видели.</p>
+			
+			<p>Примечательно, то, что можно управлять сайтом не заморачиваясь на верстке и программировании вообще, 
+			но в то же время, если есть такое желание, вы сможете испытать очень удобные и функциональные элементы кастомизации.</p>
+			
+			<p><strong>Открытая разработка</strong><br>
+			На самом деле, мы как молодое <a href="/forum/">сообщество</a> единомышленников, будем рады любой помощи. Это может быть материальная поддержка,
+			поиск ошибок, верстка шаблонов, написание плагинов или просто спасибо.<br>
+			Мы на <a href="https://github.com/Drunyacoder/AtomXCMS-2">GitHub</a></p>
+		</div>
+		<div class="right">
+			<strong>Как и говорилось, не откажемся от финансовой помощи. Нам ведь надо покупать хостинги, рекламу, кофе, ну вы поняли.</strong>
+			<br><br><br><br>
+			<strong>AtomX CMS</strong><br>
+			Z320956365350<br>
+			U237030902343<br>
+			R405239497933<br><br><br>
+			
+			<strong>Atom-M</strong><br>
+			Z170048148370<br>
+			R312807696558<br>
+			E103018815543
+		</div>
+		<div class="clear"></div>
+	</div>
+	<div class="triangles-top"></div>
+	<div class="triangles-bottom"></div>
+</div>
+<div data-to="versions-slider" class="hr">&nbsp;</div>
+<div class="versions-slider">
+    <div class="viewport">
+        <div class="items">
+            <div class="item" data-height="400px" style="left:250px;">
+                <div class="content">
+                    <a class="title" href="http://home.develdo.com/downloads.php">1.x</a>
+                    <div class="description">Не помним:)</div>
+                </div>
+                <div class="dashed"></div>
+            </div>
+            <div class="item" data-height="400px" style="left:500px;">
+                <div class="content">
+                    <a class="title" href="http://home.develdo.com/downloads.php">1.x</a>
+                    <div class="description">Не помним:)</div>
+                </div>
+                <div class="dashed"></div>
+            </div>
+            <div class="item" data-height="400px" style="left:750px;">
+                <div class="content">
+                    <a class="title" href="http://home.develdo.com/downloads.php">2.0</a>
+                    <div class="description">Редактор дизайна, плагины.</div>
+                </div>
+                <div class="dashed"></div>
+            </div>
+            <div class="item" data-height="400px" style="left:1000px;">
+                <div class="content">
+                    <a class="title" href="http://home.develdo.com/downloads.php">2.1 Alpha</a>
+                    <div class="description">Генератор тегов, графики в статистике, ORM, новый редактор в админке.</div>
+                </div>
+                <div class="dashed"></div>
+            </div>
+            <div class="item" data-height="500px" style="left:1250px;">
+                <div class="content">
+                    <a class="title" href="http://home.develdo.com/downloads.php">2.1 Alpha3</a>
+                    <div class="description">Критические исправления.</div>
+                </div>
+                <div class="dashed"></div>
+            </div>
+            <div class="item" data-height="500px" style="left:1500px;">
+                <div class="content">
+                    <a class="title" href="http://home.develdo.com/downloads.php">2.1 RC3</a>
+                    <div class="description">Фикс редактора, фикс фенсибокса, фикс голосований.</div>
+                </div>
+                <div class="dashed"></div>
+            </div>
+            <div class="item" data-height="300px" style="left:1750px;">
+                <div class="content">
+                    <a class="title" href="http://home.develdo.com/downloads.php">2.1 RC5</a>
+                    <div class="description">Апгрейд форума, новая админка, автотеги и вотермарки.</div>
+                </div>
+                <div class="dashed"></div>
+            </div>
+            <div class="item" data-height="300px" style="left:2000px;">
+                <div class="content">
+                    <a class="title" href="https://github.com/Drunyacoder/AtomXCMS-2/tree/v2.3RC1">2.3</a>
+                    <div class="description">Улучшен шаблонизатор. Исправления. Улучшен модуль "Страницы"</div>
+                </div>
+                <div class="dashed"></div>
+            </div>
+            <div class="item"  data-height="400px" style="left:2250px;">
+                <div class="content">
+                    <a class="title" href="https://github.com/Drunyacoder/AtomXCMS-2/tree/v2.5RC1">2.5</a>
+                    <div class="description">Новые возможности шаблонизатора, новый шаблон, улучшены сниппеты. Улучшен форум.</div>
+                </div>
+                <div class="dashed"></div>
+            </div>
+            <div class="item" style="left:2500px;">
+                <div class="content">
+                    <a class="title" href="https://github.com/Drunyacoder/AtomXCMS-2/releases/tag/2.6RC1">2.6 rc1</a>
+                    <div class="description">Новые возможности шаблонизатора, перевод всей системы. Новая система аттачей. Улучшения в админке и различные багфиксы</div>
+                </div>
+                <div class="dashed"></div>
+            </div>
+            <div class="item"  data-height="400px" style="left:2750px;">
+                <div class="content">
+                    <a class="title" href="https://github.com/Drunyacoder/AtomXCMS-2/releases/tag/2.6RC2">2.6 rc2</a>
+                    <div class="description">Новые возможности шаблонизатора, багфикс. Улучшена админка.</div>
+                </div>
+                <div class="dashed"></div>
+            </div>
+        </div>
+    </div>
+<div class="slideable"><span></span></div>
+<div class="shadowl"></div>
+<div class="shadowr"></div>
+</div>
+<div data-to="coment_bl" class="hr">&nbsp;</div>
+<div class="coment_bl">
+	<div class="coment_holder ch_1">
+    	<div class="coment_author">
+        	<p>TYNGO</p>
+        </div>
+    	<div class="out_circle">
+        	<div class="inside_coment_holder">
+                <p>Андрей молодец, я рад что появилась новая версия</p>
+            </div>
+        </div>
+        <div class="avatar_out_circle">
+        	<div class="avatar_inside_coment_holder">
+            	<img src="{{ template_path }}/img/splash/comment_author1.jpg" />
+            </div>
+        </div>
+    </div>
+    <div class="coment_holder ch_2">
+    	<div class="coment_author">
+        	<p>DreamsMaster</p>
+        </div>
+    	<div class="out_circle">
+        	<div class="inside_coment_holder">
+                <p>Попробовал вашу CMS и очень приятно был удивлен ее возможностями, думаю ее ждет хорошее будущее.Будем ждать нового релиза. Спасибо разработчикам! </p>
+            </div>
+        </div>
+        <div class="avatar_out_circle">
+        	<div class="avatar_inside_coment_holder">
+            	<img src="{{ template_path }}/img/splash/comment_author2.jpg" />
+            </div>
+        </div>
+    </div>
+    <div class="coment_holder ch_3">
+    	<div class="coment_author">
+        	<p>xXx13</p>
+        </div>
+    	<div class="out_circle">
+        	<div class="inside_coment_holder">
+                <p>Доброго дня создателям. Давно искал CMS подобную юкозу, там сволота-админы режут бесплатные функции не по дням а по часам. Но ведь удобен зараза!</p>
+            </div>
+        </div>
+        <div class="avatar_out_circle">
+        	<div class="avatar_inside_coment_holder">
+            	<img src="{{ template_path }}/img/splash/comment_author3.jpg" />
+            </div>
+        </div>
+    </div>
+	<div class="coment_holder ch_4">
+    	<div class="out_circle m_b">
+        	<div class="inside_coment_holder">
+                <p>Большое спасибо авторам данного проекта, надеюсь в будующем он составит конкуренцию таким КМС как юкоз.</p>
+            </div>
+        </div>
+        <div class="avatar_out_circle">
+        	<div class="avatar_inside_coment_holder">
+            	<img src="{{ template_path }}/img/splash/comment_author4.jpg" />
+            </div>
+        </div>
+		<div class="coment_author">
+        	<p class="arr_top">General</p>
+        </div>
+    </div>
+	<div class="coment_holder ch_5">
+    	<div class="out_circle m_b">
+        	<div class="inside_coment_holder">
+                <p>CMS очень понравилась, особенно установка - в один шаг. Такого я еще не встречал. Спасибо разработчикам!</p>
+            </div>
+        </div>
+        <div class="avatar_out_circle">
+        	<div class="avatar_inside_coment_holder">
+            	<img src="{{ template_path }}/img/splash/comment_author5.jpg" />
+            </div>
+        </div>
+		<div class="coment_author">
+        	<p class="arr_top">Роман Маслов</p>
+        </div>
+    </div>
+	
+	<a class="social_icon si_1" href="http://vk.com/atomx_cms"><img src="{{ template_path }}/img/splash/vk.jpg" /></a>
+	<a class="social_icon si_2" href="https://www.youtube.com/watch?v=t34es9tDy_M"><img src="{{ template_path }}/img/splash/yt.jpg" /></a>
+	<a class="social_icon si_3" href="https://www.facebook.com/fapos?fref=ts"><img src="{{ template_path }}/img/splash/fb.jpg" /></a>
+	<a class="social_icon si_4" href="https://twitter.com/AtomXCMS"><img src="{{ template_path }}/img/splash/tw.jpg" /></a>
+</div>
+<div onClick="window.location.href = 'https://github.com/Drunyacoder/AtomXCMS-2'" class="forkme">Fork me</div>
+<div class="popup">
+<h1>ЛИЦЕНЗИОННОЕ СОГЛАШЕНИЕ</h1>
+
+Данное соглашение содержит перечень пунктов, в которых говориться о том, какими правами, в отношении, предостовляемого нами продукта, в частночти, CMS AtomX, Вы обладаете, а какими нет.<br><br>
+
+    1.Объектом данного соглашения является CMS AtomX (далее "продукт"), как в целом, так и отдельные ее части.<br><br>
+
+    2.Данное лицензионное соглашение распространяется как на весь продукт, так и на его отдельные части.<br><br>
+
+    3. Запрещаеться любое распространение или копирование c целью распространения, частичное или не частичное, продукта, без получения оффициального разрешения автора (Андрей Брыкин), не зависимо от того, был ли продукт изменен или остался неизменным.<br><br>
+
+    4.Запрещаеться использование, не законно полученного продукта. Законно полученным, считаеться продукт, полученный с оффициального источника (ресурс http://atomx.net) или с этого сайта (http://home.develdo.com). А так же источники, на которые может ссылаться официальный сайт(http://atomx.net).<br><br>
+
+    5.Вы можете использовать Вашу копию продукта на протяжении не ограниченного времени и спользовать продукт в любых целях, которые не противоречат законодательству и предыдущим пунктам данного соглашения.<br><br>
+
+    6.Авторы оставляют за собой право не оказывать техническую поддержку обладателям бесплатной версии продукта, и вносить в продукт любые изменения, не ставя их в извесность. Так же доводим до Вашего сведения, что мы не даем гарантии на то, что более поздние версии продукта будут совместимы с более раними, и не несем ответственности за любой ущерб, к которому это может привести.<br><br>
+
+    7.Используя продукт, Вы, автоматически, соглашаетесь со всеми условиями данного договора.<br><br>
+
+    8.Все права на продукт полностью и безраздельно принадлежат автору ©Andrey Brykin & CMS AtomX Comunity* 2010-2014.<br><br>
+
+    9.Данный договор дает только право на использование продукта, не противоречащее предыдущим пунктам и не более. Права на сам продукт пренадлежат, исключительно, автору.<br><br>
+	
+	10. На вашем сайте, работающем на AtomX CMS должно быть упоминание о AtomX и о сайте atomx.net.<br><br>
+
+
+	*Под CMS AtomX Comunity или Сообществом CMS AtomX подразумевается коллектив разработчиков и пользователей, активно принимающих участие в разработке AtomX и зарегистрированных на сайте поддержки atomx.net. <br><br>
+	
+	<a id="download-link" target="_blank" href="">Скачать(согласен)</a>
+	<a onClick="$('.popup').fadeOut();" style="margin-left:50px;" href="javascript:void(0);">Отмена</a>
+	<br><br>
+</div>
+<div class="loader-overlay">
+	<div class="globus">
+		<div class="viewport">
+			<div class="map">
+				<div class="country"></div>
+				<div class="country"></div>
+				<div class="country"></div>
+				<div class="country"></div>
+				<div class="country"></div>
+				<div class="country"></div>
+				<div class="country"></div>
+				<div class="country"></div>
+				<div class="country"></div>
+				<div class="country"></div>
+				<div class="country"></div>
+				<div class="country"></div>
+			</div>
+		</div>
+	</div>
+</div>
+<div style="position:absolute; left:-2000px; width:100px;">{[!liveinternet]}</div>
+</body>
+</html>
+
